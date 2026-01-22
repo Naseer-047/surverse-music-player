@@ -85,28 +85,30 @@ const Player = () => {
                         </div>
 
                         {/* MAIN CONTENT AREA */}
-                        <div className="flex-1 flex flex-col items-center justify-between px-8 py-4 max-w-2xl mx-auto w-full">
+                        <div className="flex-1 flex flex-col items-center px-6 py-6 max-w-2xl mx-auto w-full overflow-y-auto max-h-[calc(100vh-100px)] gap-4">
                             
                             {/* SECTION 2: ALBUM ART (MAIN FOCUS) */}
                             <motion.div 
                                 layoutId="activeSongImage"
-                                className="relative w-full aspect-square max-w-[340px] md:max-w-[450px] shrink-0"
+                                className="relative w-full aspect-square max-w-[280px] md:max-w-[320px] shrink-0 mt-4"
                             >
                                 <img 
-                                    src={currentSong.image?.replace('150x150', '800x800')} 
-                                    className="w-full h-full object-cover rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] bg-white ring-1 ring-black/5" 
+                                    src={currentSong.image?.replace('150x150', '500x500') || currentSong.image} 
+                                    alt={currentSong.title}
+                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/500/64748b/ffffff?text=No+Image'; }}
+                                    className="w-full h-full object-cover rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] bg-slate-100 ring-1 ring-black/5" 
                                 />
                             </motion.div>
 
                             {/* SECTION 3: SONG INFO */}
-                            <div className="text-center space-y-2 mt-4">
-                                <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 leading-tight line-clamp-2">{currentSong.title}</h2>
-                                <p className="text-sm md:text-lg font-bold text-slate-400 uppercase tracking-[0.2em]">{currentSong.artist}</p>
+                            <div className="text-center space-y-1 w-full px-4">
+                                <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-slate-900 leading-tight line-clamp-2">{currentSong.title}</h2>
+                                <p className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">{currentSong.artist}</p>
                             </div>
 
                             {/* SECTION 4: SEEK BAR */}
-                            <div className="w-full space-y-3 mt-8">
-                                <div className="relative h-2 w-full bg-slate-100 rounded-full overflow-hidden group cursor-pointer">
+                            <div className="w-full space-y-2 px-2">
+                                <div className="relative h-1.5 w-full bg-slate-100 rounded-full overflow-hidden group cursor-pointer">
                                     <motion.div 
                                         className="absolute inset-y-0 left-0 bg-slate-900 rounded-full h-full"
                                         style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
@@ -119,54 +121,54 @@ const Player = () => {
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                     />
                                 </div>
-                                <div className="flex justify-between text-[11px] font-bold text-slate-300 font-mono tracking-widest px-1">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-300 font-mono tracking-widest">
                                     <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
                                     <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
                                 </div>
                             </div>
 
                             {/* SECTION 5: CONTROLS (CENTERED) */}
-                            <div className="flex items-center justify-center gap-10 md:gap-14 py-6">
-                                <button onClick={prevSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                    <SkipBack size={36} fill="currentColor" strokeWidth={0} />
+                            <div className="flex items-center justify-center gap-8 md:gap-12 py-4">
+                                <button onClick={prevSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90 p-2">
+                                    <SkipBack size={32} fill="currentColor" strokeWidth={0} />
                                 </button>
                                 
                                 <button 
                                     onClick={isPlaying ? pauseSong : resumeSong}
-                                    className="w-20 h-20 bg-slate-900 text-white rounded-[2.5rem] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-200"
+                                    className="w-16 h-16 md:w-18 md:h-18 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-200"
                                 >
-                                    {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1.5" />}
+                                    {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
                                 </button>
 
-                                <button onClick={nextSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                    <SkipForward size={36} fill="currentColor" strokeWidth={0} />
+                                <button onClick={nextSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90 p-2">
+                                    <SkipForward size={32} fill="currentColor" strokeWidth={0} />
                                 </button>
                             </div>
 
                             {/* SECTION 6: SECONDARY ACTIONS (BOTTOM) */}
-                            <div className="w-full flex items-center justify-between py-6 border-t border-slate-50">
+                            <div className="w-full flex items-center justify-between py-3 border-t border-slate-50 px-2 mt-auto">
                                 <button 
                                     onClick={() => toggleFavorite(currentSong)}
-                                    className={`p-3 rounded-full transition-all active:scale-90 ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'text-slate-300 hover:text-slate-900'}`}
+                                    className={`p-2 rounded-full transition-all active:scale-90 ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'text-slate-300 hover:text-slate-900'}`}
                                 >
-                                    <Heart size={28} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                    <Heart size={22} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
                                 </button>
-                                <div className="flex items-center gap-6">
-                                    <button onClick={() => openPlaylistModal(currentSong)} className="p-3 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                        <Plus size={28} />
+                                <div className="flex items-center gap-4">
+                                    <button onClick={() => openPlaylistModal(currentSong)} className="p-2 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
+                                        <Plus size={22} />
                                     </button>
-                                    <button className="p-3 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                        <ListMusic size={28} />
+                                    <button className="p-2 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
+                                        <ListMusic size={22} />
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-4 bg-slate-50 py-2 px-4 rounded-full border border-slate-100">
-                                    <Volume2 size={18} className="text-slate-300" />
+                                <div className="flex items-center gap-3 bg-slate-50 py-1.5 px-3 rounded-full border border-slate-100">
+                                    <Volume2 size={16} className="text-slate-300" />
                                     <input 
                                         type="range"
                                         min="0" max="1" step="0.01"
                                         value={volume}
                                         onChange={(e) => setVolume(e.target.value)}
-                                        className="w-20 md:w-28 h-1 bg-slate-200 rounded-full appearance-none accent-slate-900 cursor-pointer"
+                                        className="w-16 md:w-20 h-1 bg-slate-200 rounded-full appearance-none accent-slate-900 cursor-pointer"
                                     />
                                 </div>
                             </div>
