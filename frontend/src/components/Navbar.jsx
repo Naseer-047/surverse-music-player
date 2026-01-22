@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Music2, Sparkles, User, Bell } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import usePlayerStore from '../store/playerStore';
 
