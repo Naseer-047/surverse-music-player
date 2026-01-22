@@ -15,7 +15,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-[60] section-padding py-3 md:py-4 bg-white/40 backdrop-blur-xl border-b border-black/5">
+        <nav className="z-[60] section-padding py-3 md:py-4 bg-white/40 backdrop-blur-xl border-b border-black/5 flex-shrink-0">
             <div className="flex items-center justify-between gap-4 relative">
                 <div className="flex items-center gap-3 group cursor-pointer shrink-0" onClick={toggleSidebar}>
                     <div className="w-12 h-12 md:w-10 md:h-10 bg-black text-white rounded-2xl flex items-center justify-center group-hover:rotate-[15deg] transition-transform shadow-lg">

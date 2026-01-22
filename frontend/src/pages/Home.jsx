@@ -302,7 +302,7 @@ const Home = () => {
     };
 
     return (
-        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-0 pt-36 md:pt-32">
+        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-0">
             
             {/* 0. LOADING SCREEN */}
             <AnimatePresence mode="wait">

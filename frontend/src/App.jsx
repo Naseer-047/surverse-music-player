@@ -16,19 +16,27 @@ function App() {
 
   return (
     <Router basename={import.meta.env.BASE_URL}>
-      <div className="min-h-screen bg-[#F8F8F8]">
+      <div className="relative min-h-screen bg-[#F8F8F8]">
+        {/* Sidebar remains fixed but is managed by the layout push */}
         <Sidebar />
-        <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative pb-0`}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/playlists" element={<PlaylistPage />} />
-            <Route path="/favorites" element={<FavoritesPage />} />
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/trending" element={<TrendingPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
+        
+        {/* Main Content Hub - Max Width Centered */}
+        <div className="max-w-[1600px] mx-auto relative flex flex-col min-h-screen">
+          <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative flex-1 flex flex-col overflow-x-hidden`}>
+            <Navbar />
+            <div className="flex-1 w-full">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/playlists" element={<PlaylistPage />} />
+                <Route path="/favorites" element={<FavoritesPage />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/trending" element={<TrendingPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </div>
+          </main>
+        </div>
+
         <Player />
         <PlaylistModal />
       </div>
