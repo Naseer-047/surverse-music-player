@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, ChevronRight, ChevronLeft, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus } from 'lucide-react';
+import { Play, Pause, CircleDot, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
@@ -276,16 +276,16 @@ const Player = () => {
                 )}
             </AnimatePresence>
 
-            {/* MINIMIZED PILL PLAYER - Fully Rounded & Modern */}
+            {/* MINIMIZED PILL PLAYER - ABSOLUTE CENTER OF PAGE */}
             {!isFullScreen && (
                 <motion.div 
-                    initial={{ y: 200, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 200, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[88%] lg:w-[80%] max-w-4xl z-[60]"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94%] md:w-[70%] lg:w-[60%] max-w-3xl z-[60]"
                 >
-                    <div className="bg-white/95 backdrop-blur-3xl border border-white shadow-2xl rounded-full px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3 md:gap-4 ring-1 ring-black/5">
+                    <div className="bg-white/98 backdrop-blur-3xl border-2 border-slate-200 shadow-2xl rounded-full px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4 md:gap-6">
                         {/* Album Art & Song Info */}
                         <div onClick={toggleFullScreen} className="flex items-center gap-3 md:gap-4 flex-1 min-w-0 cursor-pointer group">
                             <motion.div 
@@ -307,25 +307,25 @@ const Player = () => {
                             </div>
                         </div>
 
-                        {/* Playback Controls - Always Visible */}
-                        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                        {/* Playback Controls - New Filled Icons */}
+                        <div className="flex items-center gap-3 md:gap-5 shrink-0">
                             <button 
                                 onClick={prevSong} 
-                                className="p-2.5 md:p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all active:scale-90"
+                                className="p-3 md:p-3.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-90 hover:shadow-md"
                             >
-                                <ChevronLeft size={22} strokeWidth={3} />
+                                <ChevronsLeft size={24} strokeWidth={2.5} fill="currentColor" className="opacity-50" />
                             </button>
                             <button 
                                 onClick={isPlaying ? pauseSong : resumeSong}
-                                className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-slate-900 to-slate-700 text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg"
+                                className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl hover:shadow-2xl"
                             >
-                                {isPlaying ? <Pause size={20} fill="currentColor" strokeWidth={0} /> : <Play size={20} fill="currentColor" strokeWidth={0} className="ml-0.5" />}
+                                {isPlaying ? <Pause size={26} fill="white" strokeWidth={0} /> : <Play size={26} fill="white" strokeWidth={0} className="ml-1" />}
                             </button>
                             <button 
                                 onClick={nextSong} 
-                                className="p-2.5 md:p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all active:scale-90"
+                                className="p-3 md:p-3.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-90 hover:shadow-md"
                             >
-                                <ChevronRight size={22} strokeWidth={3} />
+                                <ChevronsRight size={24} strokeWidth={2.5} fill="currentColor" className="opacity-50" />
                             </button>
                         </div>
 
