@@ -390,34 +390,68 @@ const Home = () => {
                                 </button>
                             </div>
                             <div className="space-y-4">
-                                {trending.slice(0, 6).map((song, idx) => (
-                                    <div key={song.id} className="flex items-center gap-4 md:gap-8 p-4 md:p-6 bg-white rounded-[2rem] border border-black/5 hover:bg-black hover:text-white transition-all group cursor-pointer" onClick={() => { setQueue(trending); playSong(song, idx); }}>
-                                        <span className="text-2xl md:text-4xl font-black italic opacity-20 w-8 md:w-12 text-center group-hover:text-white/20">{idx + 1}</span>
-                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl overflow-hidden shadow-md ">
-                                            <img src={song.image} className="w-full h-full object-cover" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm md:text-xl font-bold truncate">{song.title}</h4>
-                                            <p className="text-[10px] md:text-xs opacity-50 font-bold uppercase truncate">{song.artist}</p>
-                                        </div>
-                                        <div className="flex flex-col items-end opacity-40 group-hover:opacity-100 whitespace-nowrap">
-                                             <span className="text-[10px] md:text-xs font-bold">12.4M</span>
-                                             <TrendingUp size={14} className="mt-1 text-green-500" />
-                                        </div>
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); toggleFavorite(song); }}
-                                            className={`p-3 opacity-0 group-hover:opacity-100 transition-all invisible md:visible ${favorites.some(f => f.id === song.id) ? 'text-red-500' : 'hover:text-red-500'}`}
+                                {/* MOBILE: Horizontal Card Carousel */}
+                                <div className="flex md:hidden overflow-x-auto gap-4 pb-8 snap-x scrollbar-hide -mx-4 px-4">
+                                    {trending.slice(0, 6).map((song, idx) => (
+                                        <div 
+                                            key={song.id} 
+                                            className="relative flex-none w-[70vw] snap-center aspect-[3/4] rounded-[2rem] overflow-hidden group shadow-xl"
+                                            onClick={() => { setQueue(trending); playSong(song, idx); }}
                                         >
-                                            <Heart size={20} fill={favorites.some(f => f.id === song.id) ? "currentColor" : "none"} />
-                                        </button>
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); openPlaylistModal(song); }}
-                                            className="p-3 opacity-0 group-hover:opacity-100 hover:text-green-500 transition-all invisible md:visible"
-                                        >
-                                            <Plus size={20} />
-                                        </button>
-                                    </div>
-                                ))}
+                                            <img src={song.image.replace('150x150', '500x500')} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90" />
+                                            
+                                            {/* Big Rank Number */}
+                                            <span className="absolute top-2 right-4 text-8xl font-black italic text-white/10">{idx + 1}</span>
+                                            
+                                            <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
+                                                <h4 className="text-2xl font-black italic text-white leading-none mb-1 line-clamp-2">{song.title}</h4>
+                                                <p className="text-xs font-bold text-white/60 uppercase tracking-widest truncate">{song.artist}</p>
+                                                
+                                                <div className="flex items-center gap-4 mt-4">
+                                                    <button className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center">
+                                                        <Play size={16} fill="currentColor" className="ml-0.5" />
+                                                    </button>
+                                                    <button onClick={(e) => { e.stopPropagation(); toggleFavorite(song); }}>
+                                                        <Heart size={20} className={favorites.some(f => f.id === song.id) ? "text-red-500 fill-current" : "text-white"} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* DESKTOP: Vertical List */}
+                                <div className="hidden md:flex flex-col gap-4">
+                                    {trending.slice(0, 6).map((song, idx) => (
+                                        <div key={song.id} className="flex items-center gap-4 md:gap-8 p-4 md:p-6 bg-white rounded-[2rem] border border-black/5 hover:bg-black hover:text-white transition-all group cursor-pointer" onClick={() => { setQueue(trending); playSong(song, idx); }}>
+                                            <span className="text-2xl md:text-4xl font-black italic opacity-20 w-8 md:w-12 text-center group-hover:text-white/20">{idx + 1}</span>
+                                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl overflow-hidden shadow-md ">
+                                                <img src={song.image} className="w-full h-full object-cover" />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-sm md:text-xl font-bold truncate">{song.title}</h4>
+                                                <p className="text-[10px] md:text-xs opacity-50 font-bold uppercase truncate">{song.artist}</p>
+                                            </div>
+                                            <div className="flex flex-col items-end opacity-40 group-hover:opacity-100 whitespace-nowrap">
+                                                <span className="text-[10px] md:text-xs font-bold">12.4M</span>
+                                                <TrendingUp size={14} className="mt-1 text-green-500" />
+                                            </div>
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); toggleFavorite(song); }}
+                                                className={`p-3 opacity-0 group-hover:opacity-100 transition-all invisible md:visible ${favorites.some(f => f.id === song.id) ? 'text-red-500' : 'hover:text-red-500'}`}
+                                            >
+                                                <Heart size={20} fill={favorites.some(f => f.id === song.id) ? "currentColor" : "none"} />
+                                            </button>
+                                            <button 
+                                                onClick={(e) => { e.stopPropagation(); openPlaylistModal(song); }}
+                                                className="p-3 opacity-0 group-hover:opacity-100 hover:text-green-500 transition-all invisible md:visible"
+                                            >
+                                                <Plus size={20} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </section>
 
