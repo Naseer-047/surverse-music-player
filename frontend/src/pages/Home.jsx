@@ -120,6 +120,7 @@ const Home = () => {
         setLoading(true);
         try {
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            const seenById = new Set();
             
             // 1. Fetch Specific Pinned Songs for Global Top 5
             const pinnedQueries = [
@@ -145,12 +146,16 @@ const Home = () => {
                 newResPromise
             ]);
             
-            // Extract the first match for each pinned song
+            // Extract the first match for each pinned song & Track IDs
             const curatedTrending = pinnedResults.map(results => results[0]).filter(Boolean);
+            curatedTrending.forEach(song => seenById.add(song.id));
             setTrending(curatedTrending);
             
-            const filteredNew = filterSongs(newData);
-            setNewArrivals(filteredNew.length > 0 ? shuffleArray(filteredNew).slice(0, 20) : []); 
+            // Filter New Arrivals - Exclude already seen songs
+            const filteredNew = filterSongs(newData).filter(song => !seenById.has(song.id));
+            const uniqueNewArrivals = filteredNew.length > 0 ? shuffleArray(filteredNew).slice(0, 20) : [];
+            uniqueNewArrivals.forEach(song => seenById.add(song.id));
+            setNewArrivals(uniqueNewArrivals); 
 
             // 3. Fetch Trending Artists (Real Data)
             const artistQuery = 'top indian singers 2024';
@@ -171,14 +176,15 @@ const Home = () => {
             });
             setTrendingArtists(uniqueArtists);
 
-            // 4. Fetch Indie Spotlight (Real Data)
+            // 4. Fetch Indie Spotlight (Real Data) - Filter Duplicates
             const indieQuery = 'indian indie hits 2024';
             const indieRes = await fetch(`${baseUrl}/api/search?q=${indieQuery}`);
             const indieData = await indieRes.json();
-            setIndieSongs(filterSongs(indieData).slice(0, 4));
+            const filteredIndie = filterSongs(indieData).filter(song => !seenById.has(song.id)).slice(0, 4);
+            setIndieSongs(filteredIndie);
 
             // Pick a Random Hero Song from combined results
-            const allInitialSongs = [...curatedTrending, ...filteredNew, ...filterSongs(indieData)];
+            const allInitialSongs = [...curatedTrending, ...uniqueNewArrivals, ...filteredIndie];
             if (allInitialSongs.length > 0) {
                 const randomHero = allInitialSongs[Math.floor(Math.random() * allInitialSongs.length)];
                 setHeroSong(randomHero);
