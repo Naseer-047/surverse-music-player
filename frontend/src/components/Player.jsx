@@ -25,7 +25,19 @@ const Player = () => {
             const response = await fetch(currentSong.url);
             const blob = await response.blob();
             await db.saveSong(currentSong, blob);
-            alert(`${currentSong.title} downloaded successfully!`);
+
+            // Trigger Browser/System File Download
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `${currentSong.title} - ${currentSong.artist}.mp3`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            alert(`${currentSong.title} added to Offline Store & Downloaded!`);
         } catch (error) {
             console.error('Download failed:', error);
             alert('Download failed. Please try again.');
