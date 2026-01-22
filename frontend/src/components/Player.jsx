@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, CirclePlay, CirclePause, HeartHandshake, ListPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
@@ -65,116 +65,214 @@ const Player = () => {
 
             <AnimatePresence>
                 {isFullScreen && (
-                    <motion.div 
-                        initial={{ borderRadius: '2.5rem', height: '80px', width: '90%', bottom: '24px', left: '5%', opacity: 0 }}
-                        animate={{ borderRadius: '0rem', height: '100vh', width: '100%', bottom: '0px', left: '0px', opacity: 1 }}
-                        exit={{ borderRadius: '2.5rem', height: '80px', width: '90%', bottom: '24px', left: '5%', opacity: 0 }}
-                        transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-                        className="fixed inset-0 z-[100] bg-white/80 backdrop-blur-3xl flex flex-col overflow-hidden text-slate-900 border border-white/40"
-                    >
-                        {/* SECTION 1: TOP BAR */}
-                        <div className="flex justify-between items-center px-6 py-6 z-20 shrink-0">
-                            <button onClick={toggleFullScreen} className="p-3 hover:bg-black/5 rounded-full transition-colors active:scale-90">
-                                <ChevronDown size={28} className="text-slate-400" />
-                            </button>
-                            <div className="text-center font-bold">
-                                <span className="text-[10px] uppercase tracking-[0.4em] text-slate-300 block mb-0.5">Now Playing</span>
-                                <h3 className="text-[11px] uppercase tracking-widest text-slate-500 truncate max-w-[180px]">{currentSong.title}</h3>
-                            </div>
-                            <div className="w-12 h-12" />
-                        </div>
-
-                        {/* MAIN CONTENT AREA */}
-                        <div className="flex-1 flex flex-col items-center px-6 py-6 max-w-2xl mx-auto w-full overflow-y-auto max-h-[calc(100vh-100px)] gap-4">
-                            
-                            {/* SECTION 2: ALBUM ART (MAIN FOCUS) */}
-                            <motion.div 
-                                layoutId="activeSongImage"
-                                className="relative w-full aspect-square max-w-[280px] md:max-w-[320px] shrink-0 mt-4"
-                            >
-                                <img 
-                                    src={currentSong.image?.replace('150x150', '500x500') || currentSong.image} 
-                                    alt={currentSong.title}
-                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/500/64748b/ffffff?text=No+Image'; }}
-                                    className="w-full h-full object-cover rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] bg-slate-100 ring-1 ring-black/5" 
-                                />
-                            </motion.div>
-
-                            {/* SECTION 3: SONG INFO */}
-                            <div className="text-center space-y-1 w-full px-4">
-                                <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-slate-900 leading-tight line-clamp-2">{currentSong.title}</h2>
-                                <p className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">{currentSong.artist}</p>
-                            </div>
-
-                            {/* SECTION 4: SEEK BAR */}
-                            <div className="w-full space-y-2 px-2">
-                                <div className="relative h-1.5 w-full bg-slate-100 rounded-full overflow-hidden group cursor-pointer">
-                                    <motion.div 
-                                        className="absolute inset-y-0 left-0 bg-slate-900 rounded-full h-full"
-                                        style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
-                                    />
-                                    <input 
-                                        type="range" 
-                                        min="0" max={duration || 100} 
-                                        value={currentTime}
-                                        onChange={handleSeek}
-                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                    />
-                                </div>
-                                <div className="flex justify-between text-[10px] font-bold text-slate-300 font-mono tracking-widest">
-                                    <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
-                                    <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
-                                </div>
-                            </div>
-
-                            {/* SECTION 5: CONTROLS (CENTERED) */}
-                            <div className="flex items-center justify-center gap-8 md:gap-12 py-4">
-                                <button onClick={prevSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90 p-2">
-                                    <SkipBack size={32} fill="currentColor" strokeWidth={0} />
+                    <>
+                        {/* ==================== MOBILE PLAYER (md:hidden) ==================== */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="md:hidden fixed inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col overflow-hidden text-slate-900"
+                        >
+                            {/* MOBILE TOP BAR */}
+                            <div className="flex justify-between items-center px-6 py-6">
+                                <button onClick={toggleFullScreen} className="p-3 -ml-3 hover:bg-black/5 rounded-full transition-colors active:scale-90">
+                                    <ChevronDown size={28} className="text-slate-900" />
                                 </button>
+                                <div className="text-center">
+                                    <span className="text-[9px] uppercase tracking-[0.3em] text-slate-400 font-black">Now Playing</span>
+                                </div>
+                                <div className="w-10 h-10" />
+                            </div>
+
+                            {/* MOBILE CONTENT - Centered & Compact */}
+                            <div className="flex-1 flex flex-col items-center justify-center px-8 pb-8 gap-6">
                                 
-                                <button 
-                                    onClick={isPlaying ? pauseSong : resumeSong}
-                                    className="w-16 h-16 md:w-18 md:h-18 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shadow-slate-200"
+                                {/* Album Art - Large & Centered */}
+                                <motion.div 
+                                    layoutId="activeSongImage"
+                                    className="relative w-full aspect-square max-w-[300px] shrink-0"
                                 >
-                                    {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
-                                </button>
-
-                                <button onClick={nextSong} className="text-slate-300 hover:text-slate-900 transition-all active:scale-90 p-2">
-                                    <SkipForward size={32} fill="currentColor" strokeWidth={0} />
-                                </button>
-                            </div>
-
-                            {/* SECTION 6: SECONDARY ACTIONS (BOTTOM) */}
-                            <div className="w-full flex items-center justify-between py-3 border-t border-slate-50 px-2 mt-auto">
-                                <button 
-                                    onClick={() => toggleFavorite(currentSong)}
-                                    className={`p-2 rounded-full transition-all active:scale-90 ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'text-slate-300 hover:text-slate-900'}`}
-                                >
-                                    <Heart size={22} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
-                                </button>
-                                <div className="flex items-center gap-4">
-                                    <button onClick={() => openPlaylistModal(currentSong)} className="p-2 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                        <Plus size={22} />
-                                    </button>
-                                    <button className="p-2 text-slate-300 hover:text-slate-900 transition-all active:scale-90">
-                                        <ListMusic size={22} />
-                                    </button>
-                                </div>
-                                <div className="flex items-center gap-3 bg-slate-50 py-1.5 px-3 rounded-full border border-slate-100">
-                                    <Volume2 size={16} className="text-slate-300" />
-                                    <input 
-                                        type="range"
-                                        min="0" max="1" step="0.01"
-                                        value={volume}
-                                        onChange={(e) => setVolume(e.target.value)}
-                                        className="w-16 md:w-20 h-1 bg-slate-200 rounded-full appearance-none accent-slate-900 cursor-pointer"
+                                    <img 
+                                        src={currentSong.image?.replace('150x150', '500x500') || currentSong.image} 
+                                        alt={currentSong.title}
+                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/500/64748b/ffffff?text=No+Image'; }}
+                                        className="w-full h-full object-cover rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] bg-slate-100 ring-1 ring-black/5" 
                                     />
+                                </motion.div>
+
+                                {/* Song Info */}
+                                <div className="text-center w-full space-y-2">
+                                    <h2 className="text-3xl font-black tracking-tighter text-slate-900 leading-tight line-clamp-2 px-4">{currentSong.title}</h2>
+                                    <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.15em]">{currentSong.artist}</p>
+                                </div>
+
+                                {/* Progress Bar */}
+                                <div className="w-full space-y-2 max-w-[340px]">
+                                    <div className="relative h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                        <motion.div 
+                                            className="absolute inset-y-0 left-0 bg-slate-900 rounded-full h-full"
+                                            style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                                        />
+                                        <input 
+                                            type="range" 
+                                            min="0" max={duration || 100} 
+                                            value={currentTime}
+                                            onChange={handleSeek}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        />
+                                    </div>
+                                    <div className="flex justify-between text-[10px] font-bold text-slate-400 font-mono">
+                                        <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
+                                        <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                    </div>
+                                </div>
+
+                                {/* Main Controls - Modern Filled Icons */}
+                                <div className="flex items-center justify-center gap-6 py-4">
+                                    <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
+                                        <SkipBack size={36} fill="currentColor" strokeWidth={0} />
+                                    </button>
+                                    
+                                    <button 
+                                        onClick={isPlaying ? pauseSong : resumeSong}
+                                        className="w-20 h-20 bg-slate-900 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl"
+                                    >
+                                        {isPlaying ? <CirclePause size={48} fill="white" className="text-slate-900" /> : <CirclePlay size={48} fill="white" className="text-slate-900" />}
+                                    </button>
+
+                                    <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
+                                        <SkipForward size={36} fill="currentColor" strokeWidth={0} />
+                                    </button>
+                                </div>
+
+                                {/* Bottom Actions - Modern Icons (NO VOLUME) */}
+                                <div className="flex items-center justify-center gap-8 py-4">
+                                    <button 
+                                        onClick={() => toggleFavorite(currentSong)}
+                                        className={`p-3 rounded-full transition-all active:scale-90 ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
+                                    >
+                                        <HeartHandshake size={28} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                    </button>
+                                    <button onClick={() => openPlaylistModal(currentSong)} className="p-3 text-slate-400 hover:text-slate-900 transition-all active:scale-90 rounded-full">
+                                        <ListPlus size={28} />
+                                    </button>
                                 </div>
                             </div>
+                        </motion.div>
 
-                        </div>
-                    </motion.div>
+                        {/* ==================== DESKTOP PLAYER (hidden md:flex) ==================== */}
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
+                            className="hidden md:flex fixed inset-0 z-[100] bg-white/90 backdrop-blur-3xl text-slate-900"
+                        >
+                            {/* DESKTOP LAYOUT - Split Screen */}
+                            <div className="w-full h-full flex items-center justify-center p-12">
+                                <div className="max-w-7xl w-full h-full flex gap-12 items-center">
+                                    
+                                    {/* LEFT: Album Art & Progress */}
+                                    <div className="flex-1 flex flex-col items-center justify-center gap-8 max-w-2xl">
+                                        <motion.div 
+                                            layoutId="activeSongImage"
+                                            className="relative w-full aspect-square max-w-[500px]"
+                                        >
+                                            <img 
+                                                src={currentSong.image?.replace('150x150', '500x500') || currentSong.image} 
+                                                alt={currentSong.title}
+                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/500/64748b/ffffff?text=No+Image'; }}
+                                                className="w-full h-full object-cover rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.25)] bg-slate-100 ring-1 ring-black/5" 
+                                            />
+                                        </motion.div>
+
+                                        {/* Progress Bar */}
+                                        <div className="w-full space-y-3">
+                                            <div className="relative h-2 w-full bg-slate-200 rounded-full overflow-hidden group">
+                                                <motion.div 
+                                                    className="absolute inset-y-0 left-0 bg-slate-900 rounded-full h-full"
+                                                    style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                                                />
+                                                <input 
+                                                    type="range" 
+                                                    min="0" max={duration || 100} 
+                                                    value={currentTime}
+                                                    onChange={handleSeek}
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                />
+                                            </div>
+                                            <div className="flex justify-between text-sm font-bold text-slate-400 font-mono">
+                                                <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
+                                                <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* RIGHT: Controls & Info */}
+                                    <div className="flex-1 flex flex-col justify-center gap-10 max-w-xl">
+                                        
+                                        {/* Close Button */}
+                                        <button onClick={toggleFullScreen} className="self-end p-3 hover:bg-black/5 rounded-full transition-colors">
+                                            <ChevronDown size={32} className="text-slate-400" />
+                                        </button>
+
+                                        {/* Song Info */}
+                                        <div className="space-y-3">
+                                            <span className="text-xs uppercase tracking-[0.3em] text-slate-400 font-black">Now Playing</span>
+                                            <h2 className="text-5xl font-black tracking-tighter text-slate-900 leading-tight">{currentSong.title}</h2>
+                                            <p className="text-xl font-bold text-slate-400 uppercase tracking-[0.1em]">{currentSong.artist}</p>
+                                        </div>
+
+                                        {/* Main Controls */}
+                                        <div className="flex items-center gap-6 py-6">
+                                            <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
+                                                <SkipBack size={40} fill="currentColor" strokeWidth={0} />
+                                            </button>
+                                            
+                                            <button 
+                                                onClick={isPlaying ? pauseSong : resumeSong}
+                                                className="w-24 h-24 bg-slate-900 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl"
+                                            >
+                                                {isPlaying ? <Pause size={40} fill="currentColor" /> : <Play size={40} fill="currentColor" className="ml-1.5" />}
+                                            </button>
+
+                                            <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
+                                                <SkipForward size={40} fill="currentColor" strokeWidth={0} />
+                                            </button>
+                                        </div>
+
+                                        {/* Secondary Controls */}
+                                        <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                                            <div className="flex items-center gap-4">
+                                                <button 
+                                                    onClick={() => toggleFavorite(currentSong)}
+                                                    className={`p-3 rounded-full transition-all ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
+                                                >
+                                                    <Heart size={24} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                                </button>
+                                                <button onClick={() => openPlaylistModal(currentSong)} className="p-3 text-slate-400 hover:text-slate-900 transition-all rounded-full">
+                                                    <Plus size={24} />
+                                                </button>
+                                            </div>
+
+                                            {/* Volume Control - DESKTOP ONLY */}
+                                            <div className="flex items-center gap-4 bg-slate-50 py-2 px-5 rounded-full border border-slate-200">
+                                                <Volume2 size={20} className="text-slate-400" />
+                                                <input 
+                                                    type="range"
+                                                    min="0" max="1" step="0.01"
+                                                    value={volume}
+                                                    onChange={(e) => setVolume(e.target.value)}
+                                                    className="w-32 h-1 bg-slate-200 rounded-full appearance-none accent-slate-900 cursor-pointer"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
 
