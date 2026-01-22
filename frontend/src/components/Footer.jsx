@@ -96,7 +96,7 @@ const Footer = () => {
 
                 <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5 gap-4">
                     <p className="text-[10px] md:text-xs font-bold opacity-30 tracking-widest uppercase text-center md:text-left">
-                        &copy; 2026 SurVerse Music. Made with <Heart size={10} className="inline mx-1 text-red-500 fill-current" /> for audiophiles.
+                        &copy; 2026 SurVerse Music. Made with <Heart size={50} className="inline mx-1 text-red-500 fill-current" /> BY Naseer Pasha
                     </p>
                     <div className="flex gap-6 text-[10px] md:text-xs font-bold opacity-30 uppercase tracking-widest">
                         <span className="hover:text-white cursor-pointer transition-colors">English (US)</span>
