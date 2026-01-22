@@ -35,7 +35,7 @@ git remote remove origin 2>$null
 git remote add origin https://Naseer-047@github.com/Naseer-047/surverse-music-player.git
 
 # Unset credential helper temporarily
-git config credential.helper ""
+# git config credential.helper ""
 
 # Push force to gh-pages
 Write-Host "Pushing to GitHub Pages..."
