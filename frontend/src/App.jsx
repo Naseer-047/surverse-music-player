@@ -4,9 +4,12 @@ import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import usePlayerStore from './store/playerStore';
 import Player from './components/Player';
-
 import Navbar from './components/Navbar';
-import PlaceholderPage from './pages/PlaceholderPage';
+import PlaylistPage from './pages/PlaylistPage';
+import FavoritesPage from './pages/FavoritesPage';
+import ExplorePage from './pages/ExplorePage';
+import TrendingPage from './pages/TrendingPage';
+import PlaylistModal from './components/PlaylistModal';
 
 function App() {
   const { isSidebarOpen } = usePlayerStore();
@@ -19,14 +22,15 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/playlists" element={<PlaceholderPage title="Your Vault" />} />
-            <Route path="/explore" element={<PlaceholderPage title="Discovery" />} />
-            <Route path="/trending" element={<PlaceholderPage title="Trending" />} />
-            <Route path="/favorites" element={<PlaceholderPage title="Liked Echoes" />} />
+            <Route path="/playlists" element={<PlaylistPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/trending" element={<TrendingPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
         <Player />
+        <PlaylistModal />
       </div>
     </Router>
   );

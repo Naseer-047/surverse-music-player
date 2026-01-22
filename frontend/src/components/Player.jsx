@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
     const { 
         currentSong, isPlaying, pauseSong, resumeSong, 
         nextSong, prevSong, volume, setVolume, 
-        isFullScreen, toggleFullScreen, isSidebarOpen
+        isFullScreen, toggleFullScreen, isSidebarOpen,
+        openPlaylistModal, toggleFavorite, favorites
     } = usePlayerStore();
     
     const audioRef = useRef(null);
@@ -20,6 +21,12 @@ const Player = () => {
             else audioRef.current.pause();
         }
     }, [isPlaying, currentSong]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
 
     const handleTimeUpdate = () => {
         if (audioRef.current) {
@@ -102,18 +109,49 @@ const Player = () => {
                                         </motion.p>
                                     </div>
 
-                                    {/* Progress Bar */}
-                                    <div className="space-y-2">
-                                         <input 
-                                            type="range" 
-                                            min="0" max={duration || 100} 
-                                            value={currentTime}
-                                            onChange={handleSeek}
-                                            className="w-full h-1 md:h-1.5 bg-black/5 rounded-full appearance-none accent-black cursor-pointer hover:h-2 transition-all"
-                                        />
-                                        <div className="flex justify-between text-[10px] md:text-xs font-bold opacity-30 font-mono">
-                                            <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
-                                            <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                    <div className="flex justify-center lg:justify-start gap-4">
+                                        <button 
+                                            onClick={() => openPlaylistModal(currentSong)}
+                                            className="w-12 h-12 rounded-full bg-black/5 hover:bg-black/10 flex items-center justify-center transition-colors text-black"
+                                            title="Add to Playlist"
+                                        >
+                                            <Plus size={24} />
+                                        </button>
+                                        <button 
+                                            onClick={() => toggleFavorite(currentSong)}
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors shadow-sm ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-500 text-white' : 'bg-black/5 text-gray-400 hover:bg-black/10'}`}
+                                            title="Favorite"
+                                        >
+                                            <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                        </button>
+                                    </div>
+
+                                    {/* Progress Bar & Volume */}
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                             <input 
+                                                type="range" 
+                                                min="0" max={duration || 100} 
+                                                value={currentTime}
+                                                onChange={handleSeek}
+                                                className="w-full h-1 md:h-1.5 bg-black/5 rounded-full appearance-none accent-black cursor-pointer hover:h-2 transition-all"
+                                            />
+                                            <div className="flex justify-between text-[10px] md:text-xs font-bold opacity-30 font-mono">
+                                                <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
+                                                <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Mobile Volume Slider */}
+                                        <div className="flex items-center gap-4 px-4 bg-black/5 rounded-full py-2">
+                                            <Volume2 size={16} className="opacity-40" />
+                                            <input 
+                                                type="range"
+                                                min="0" max="1" step="0.01"
+                                                value={volume}
+                                                onChange={(e) => setVolume(e.target.value)}
+                                                className="w-full h-1 bg-black/10 rounded-full appearance-none accent-black cursor-pointer"
+                                            />
                                         </div>
                                     </div>
 
@@ -177,7 +215,13 @@ const Player = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-6 w-1/3">
+                <div className="flex items-center justify-end gap-3 md:gap-6 w-1/3">
+                    <button 
+                        onClick={() => toggleFavorite(currentSong)}
+                        className={`transition-colors ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-gray-400 hover:text-black'}`}
+                    >
+                        <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                    </button>
                     <div className="flex items-center gap-3 group hidden sm:flex">
                         <Volume2 size={16} className="opacity-40 group-hover:opacity-100" />
                         <input 

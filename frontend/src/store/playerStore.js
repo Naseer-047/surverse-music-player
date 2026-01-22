@@ -38,6 +38,67 @@ const usePlayerStore = create((set) => ({
             currentIndex: prevIdx,
             isPlaying: true 
         };
+    }),
+    
+    // Playlist Actions
+    playlists: JSON.parse(localStorage.getItem('surverse_playlists')) || [],
+    isPlaylistModalOpen: false,
+    songToAdd: null,
+
+    openPlaylistModal: (song) => set({ isPlaylistModalOpen: true, songToAdd: song }),
+    closePlaylistModal: () => set({ isPlaylistModalOpen: false, songToAdd: null }),
+
+    createPlaylist: (name) => set((state) => {
+// ...
+        const newPlaylist = { id: Date.now(), name, songs: [], createdAt: new Date().toISOString() };
+        const updatedPlaylists = [newPlaylist, ...state.playlists];
+        localStorage.setItem('surverse_playlists', JSON.stringify(updatedPlaylists));
+        return { playlists: updatedPlaylists };
+    }),
+
+    deletePlaylist: (id) => set((state) => {
+        const updatedPlaylists = state.playlists.filter(p => p.id !== id);
+        localStorage.setItem('surverse_playlists', JSON.stringify(updatedPlaylists));
+        return { playlists: updatedPlaylists };
+    }),
+
+    addToPlaylist: (playlistId, song) => set((state) => {
+        const updatedPlaylists = state.playlists.map(p => {
+            if (p.id === playlistId) {
+                // Prevent duplicates
+                if (p.songs.some(s => s.id === song.id)) return p;
+                return { ...p, songs: [...p.songs, song] };
+            }
+            return p;
+        });
+        localStorage.setItem('surverse_playlists', JSON.stringify(updatedPlaylists));
+        return { playlists: updatedPlaylists };
+    }),
+
+    removeFromPlaylist: (playlistId, songId) => set((state) => {
+        const updatedPlaylists = state.playlists.map(p => {
+            if (p.id === playlistId) {
+                return { ...p, songs: p.songs.filter(s => s.id !== songId) };
+            }
+            return p;
+        });
+        localStorage.setItem('surverse_playlists', JSON.stringify(updatedPlaylists));
+        return { playlists: updatedPlaylists };
+    }),
+
+    // Favorites Actions
+    favorites: JSON.parse(localStorage.getItem('surverse_favorites')) || [],
+
+    toggleFavorite: (song) => set((state) => {
+        const isFav = state.favorites.some(f => f.id === song.id);
+        let updatedFavorites;
+        if (isFav) {
+            updatedFavorites = state.favorites.filter(f => f.id !== song.id);
+        } else {
+            updatedFavorites = [song, ...state.favorites];
+        }
+        localStorage.setItem('surverse_favorites', JSON.stringify(updatedFavorites));
+        return { favorites: updatedFavorites };
     })
 }));
 
