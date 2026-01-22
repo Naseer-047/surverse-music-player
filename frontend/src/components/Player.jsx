@@ -64,7 +64,7 @@ const Player = () => {
             />
 
             <AnimatePresence>
-                {isFullScreen ? (
+                {isFullScreen && (
                     <motion.div 
                         initial={{ borderRadius: '2.5rem', height: '80px', width: '90%', bottom: '24px', left: '5%', opacity: 0 }}
                         animate={{ borderRadius: '0rem', height: '100vh', width: '100%', bottom: '0px', left: '0px', opacity: 1 }}
@@ -173,6 +173,7 @@ const Player = () => {
 
                         </div>
                     </motion.div>
+                )}
             </AnimatePresence>
 
             {/* MINIMIZED PLAYER - ALWAYS AT BOTTOM (Outside AnimatePresence) */}
