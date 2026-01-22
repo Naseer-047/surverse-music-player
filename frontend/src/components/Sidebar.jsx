@@ -63,17 +63,7 @@ const Sidebar = () => {
             </div>
           </nav>
 
-          <div className="mt-auto pt-10 border-t border-black/5">
-             <div className="p-5 rounded-3xl bg-black/5 flex items-center gap-4 group cursor-pointer hover:bg-black hover:text-white transition-all duration-500">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-black/5">
-                    <User size={18} />
-                </div>
-                <div>
-                    <p className="text-xs font-black">Naseer Pasha</p>
-                    <p className="text-[8px] opacity-40 font-bold uppercase tracking-widest">Premium Member</p>
-                </div>
-             </div>
-          </div>
+
         </motion.aside>
       )}
     </AnimatePresence>

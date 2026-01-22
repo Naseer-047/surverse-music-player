@@ -13,6 +13,9 @@ if ($LASTEXITCODE -ne 0) {
 # Navigate to build output
 Set-Location "dist"
 
+# Fix 404 on refresh for GitHub Pages (SPA Support)
+Copy-Item "index.html" "404.html" -Force
+
 # Initialize Git
 git init
 

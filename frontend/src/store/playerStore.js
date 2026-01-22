@@ -7,7 +7,7 @@ const usePlayerStore = create((set) => ({
     currentIndex: -1,
     volume: 0.5,
     isFullScreen: false,
-    isSidebarOpen: true,
+    isSidebarOpen: false,
     searchQuery: '',
     setSearchQuery: (query) => set({ searchQuery: query }),
     toggleFullScreen: () => set((state) => ({ isFullScreen: !state.isFullScreen })),
