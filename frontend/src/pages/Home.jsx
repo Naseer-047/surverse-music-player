@@ -238,32 +238,39 @@ const Home = () => {
                     </motion.div>
                 ) : (
                     <>
-                        {/* 1. HERO SECTION */}
-                        <section className="relative h-[60vh] md:h-[85vh] w-full mt-4 overflow-hidden mx-auto max-w-[95%] rounded-[2rem] md:rounded-[3rem] shadow-2xl">
+                        {/* 1. HERO SECTION - REDESIGNED */}
+                        <section className="relative h-[50vh] md:h-[85vh] w-full mt-2 md:mt-4 overflow-hidden mx-auto max-w-[95%] rounded-[2rem] md:rounded-[3rem] shadow-2xl group">
                             <motion.div 
-                                initial={{ scale: 1.1 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
+                                initial={{ scale: 1 }}
+                                animate={{ scale: 1.05 }}
+                                transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
                                 className="absolute inset-0"
                             >
                                 <img 
-                                    src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=2000" 
-                                    className="w-full h-full object-cover object-center" 
+                                    src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2000" 
+                                    className="w-full h-full object-cover object-center filter brightness-[0.8] group-hover:brightness-100 transition-all duration-700" 
                                     alt="Hero"
                                 />
                             </motion.div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                             
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 md:p-12 text-center text-white z-10">
-                                <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="flex flex-col items-center">
-                                    <span className="inline-block px-3 py-1 md:px-4 md:py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 md:mb-6">Featured This Week</span>
-                                    <h1 className="text-5xl md:text-[9rem] font-black italic tracking-tighter leading-none mb-6">
-                                        Electric <br />
-                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Dreams.</span>
+                            <div className="absolute bottom-0 left-0 p-6 md:p-16 text-white z-10 w-full md:w-2/3">
+                                <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="flex flex-col items-start text-left">
+                                    <span className="inline-block px-3 py-1 mb-4 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-[10px] md:text-xs font-bold tracking-widest uppercase">Spotlight</span>
+                                    <h1 className="text-4xl md:text-[7rem] font-black italic tracking-tighter leading-[0.9] mb-4 md:mb-8">
+                                        The Weekend <br />
+                                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600">Vibes.</span>
                                     </h1>
-                                    <div className="flex items-center justify-center gap-4 md:gap-6">
-                                        <button className="bg-white text-black px-6 py-3 md:px-10 md:py-5 rounded-full font-black text-xs md:text-sm tracking-widest hover:scale-105 transition-transform">PLAY</button>
-                                        <button className="px-6 py-3 md:px-10 md:py-5 rounded-full border border-white/20 hover:bg-white/10 font-bold text-xs md:text-sm tracking-widest backdrop-blur-md transition-all">SAVE</button>
+                                    <p className="text-xs md:text-lg font-medium opacity-70 mb-6 md:mb-10 max-w-md line-clamp-2 md:line-clamp-none">
+                                        Experience the ultimate sonic journey with our curated weekend playlist.
+                                    </p>
+                                    <div className="flex items-center gap-4">
+                                        <button className="bg-white text-black px-8 py-3 md:px-12 md:py-5 rounded-full font-black text-xs md:text-sm tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
+                                            <Play size={16} fill="currentColor" /> PLAY NOW
+                                        </button>
+                                        <button className="w-10 h-10 md:w-14 md:h-14 rounded-full border border-white/20 hover:bg-white/10 flex items-center justify-center backdrop-blur-md transition-all">
+                                            <Heart size={18} />
+                                        </button>
                                     </div>
                                 </motion.div>
                             </div>
@@ -342,28 +349,31 @@ const Home = () => {
                         </section>
 
                         {/* 5. PODCASTS & ORIGINALS */}
-                        <section className="section-padding py-12 md:py-24 bg-[#1a1a1a] text-white rounded-[2rem] md:rounded-[3rem] mx-2 md:mx-12">
-                            <div className="container mx-auto px-4 md:px-8">
-                                <div className="flex items-center gap-4 mb-8 md:mb-16">
-                                    <Mic className="text-purple-400" size={24} />
-                                    <h3 className="text-3xl md:text-5xl font-black italic tracking-tighter">Originals</h3>
+                        {/* 5. TRENDING ARTISTS (REPLACED PODCASTS) */}
+                        <section className="section-padding py-12 md:py-24">
+                            <div className="flex justify-between items-end mb-8 md:mb-12">
+                                <div>
+                                    <h3 className="text-3xl md:text-5xl font-black italic tracking-tighter mb-2">Trending Artists</h3>
+                                    <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">Who is taking over</p>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                                    {podcasts.map((pod, i) => (
-                                        <div key={i} className="bg-white/5 p-4 rounded-3xl hover:bg-white/10 transition-colors cursor-pointer group flex md:block items-center md:items-start gap-4 md:gap-0">
-                                            <div className="aspect-square w-20 md:w-auto rounded-2xl overflow-hidden md:mb-6 relative shadow-2xl shrink-0">
-                                                <img src={pod.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                                <div className="absolute top-2 left-2 md:top-4 md:left-4 bg-black/60 backdrop-blur-md px-2 py-1 md:px-3 md:py-1 rounded-full text-[8px] md:text-[10px] font-bold uppercase tracking-widest border border-white/10">
-                                                    {pod.category}
+                            </div>
+                            <div className="flex overflow-x-auto gap-6 md:gap-12 pb-8 scrollbar-hide snap-x">
+                                {indieArtists.concat(indieArtists).map((artist, i) => (
+                                    <div key={i} className="flex flex-col items-center gap-4 shrink-0 snap-center group cursor-pointer">
+                                        <div className="w-28 h-28 md:w-56 md:h-56 rounded-full p-1 border-2 border-transparent group-hover:border-black/10 transition-all duration-500 relative">
+                                            <div className="w-full h-full rounded-full overflow-hidden relative shadow-lg group-hover:shadow-2xl transition-all">
+                                                <img src={artist.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <Music2 className="text-white" />
                                                 </div>
                                             </div>
-                                            <div className="min-w-0">
-                                                <h4 className="text-lg md:text-xl font-bold truncate mb-1">{pod.title}</h4>
-                                                <p className="text-[10px] md:text-xs font-medium opacity-50 uppercase tracking-widest">Hosted by {pod.host}</p>
-                                            </div>
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="text-center">
+                                            <h4 className="text-sm md:text-xl font-black tracking-tight mb-1">{artist.name}</h4>
+                                            <p className="text-[10px] md:text-xs font-bold opacity-40 uppercase tracking-widest">{artist.genre}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </section>
 
