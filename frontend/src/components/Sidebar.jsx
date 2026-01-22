@@ -31,7 +31,7 @@ const Sidebar = () => {
           animate={{ x: 0 }}
           exit={{ x: -260 }}
           transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }} 
-          className="fixed left-0 top-0 bottom-0 w-64 bg-white/40 backdrop-blur-3xl border-r border-black/5 flex flex-col p-6 z-[70] hidden lg:flex"
+          className="fixed left-0 top-0 bottom-0 w-64 bg-white/40 backdrop-blur-3xl border-r border-black/5 flex flex-col p-6 z-[70]"
         >
           {/* Brand */}
           <div className="flex items-center justify-between mb-12">
