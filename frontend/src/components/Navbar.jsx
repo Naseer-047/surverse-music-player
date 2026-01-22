@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Music2, Sparkles, User, Bell, X } from 'lucide-react';
+import { Search, Music2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import usePlayerStore from '../store/playerStore';
@@ -67,10 +67,6 @@ const Navbar = () => {
                 </AnimatePresence>
 
                 <div className="flex items-center gap-4 md:gap-8 shrink-0">
-                    <button className="hidden lg:flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 transition-opacity">
-                        <Sparkles className="w-4 h-4" /> Discover
-                    </button>
-                    
                     {/* MOBILE SEARCH TOGGLE (LARGER) */}
                     <button 
                         className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center md:hidden hover:bg-black hover:text-white transition-all shadow-md bg-white"
@@ -78,10 +74,6 @@ const Navbar = () => {
                     >
                         <Search className="w-6 h-6" />
                     </button>
-
-                    <div className="w-12 h-12 md:w-10 md:h-10 rounded-full border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-all cursor-pointer shadow-md bg-white">
-                        <User className="w-5 h-5 md:w-4 md:h-4" />
-                    </div>
                 </div>
             </div>
         </nav>
