@@ -40,7 +40,17 @@ const Sidebar = () => {
   return (
     <AnimatePresence>
       {isSidebarOpen && (
-        <motion.aside
+        <>
+          {/* Backdrop/Overlay - Closes sidebar on click */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={toggleSidebar}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[90] lg:hidden"
+          />
+
+          <motion.aside
           initial={{ x: -260 }}
           animate={{ x: 0 }}
           exit={{ x: -260 }}
@@ -93,6 +103,7 @@ const Sidebar = () => {
           </nav>
 
         </motion.aside>
+        </>
       )}
     </AnimatePresence>
   );
