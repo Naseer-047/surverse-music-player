@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Library, Disc, Heart, User, Settings, Radio, Music2, Sparkles, X } from 'lucide-react';
+import { Home, Search, Library, Disc, Heart, User, Settings, Radio, Music2, Sparkles, X, Download } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import usePlayerStore from '../store/playerStore';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,6 +60,7 @@ const Sidebar = () => {
                 <p className="text-[10px] font-black opacity-20 uppercase tracking-[0.2em] mb-8 ml-4">Personal Space</p>
                 <NavItem to="/favorites" icon={Heart} label="Liked Echoes" />
                 <NavItem to="/playlists" icon={Library} label="Your Vault" />
+                <NavItem to="/downloads" icon={Download} label="Offline Store" />
             </div>
           </nav>
 

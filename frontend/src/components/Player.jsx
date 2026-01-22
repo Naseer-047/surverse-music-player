@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, CircleDot, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { Play, Pause, CircleDot, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus, ChevronsLeft, ChevronsRight, Download } from 'lucide-react';
+import { db } from '../utils/db';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
@@ -14,6 +15,24 @@ const Player = () => {
     const audioRef = useRef(null);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const handleDownload = async () => {
+        if (!currentSong || isDownloading) return;
+        
+        setIsDownloading(true);
+        try {
+            const response = await fetch(currentSong.url);
+            const blob = await response.blob();
+            await db.saveSong(currentSong, blob);
+            alert(`${currentSong.title} downloaded successfully!`);
+        } catch (error) {
+            console.error('Download failed:', error);
+            alert('Download failed. Please try again.');
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     useEffect(() => {
         if (audioRef.current && currentSong) {
@@ -353,6 +372,15 @@ const Player = () => {
                                     className="w-24 h-1 bg-slate-200 rounded-full appearance-none cursor-pointer accent-slate-900"
                                 />
                             </div>
+
+                            <button 
+                                onClick={handleDownload}
+                                disabled={isDownloading}
+                                className={`p-2.5 rounded-full transition-all flex items-center justify-center ${isDownloading ? 'text-blue-500 animate-pulse' : 'text-slate-400 hover:text-blue-500 hover:bg-slate-50'}`}
+                                title="Download for offline"
+                            >
+                                <Download size={22} strokeWidth={2} />
+                            </button>
 
                             <button 
                                 onClick={() => toggleFavorite(currentSong)}

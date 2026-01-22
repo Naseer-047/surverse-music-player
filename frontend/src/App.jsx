@@ -9,10 +9,27 @@ import PlaylistPage from './pages/PlaylistPage';
 import FavoritesPage from './pages/FavoritesPage';
 import ExplorePage from './pages/ExplorePage';
 import TrendingPage from './pages/TrendingPage';
+import Downloads from './pages/Downloads';
 import PlaylistModal from './components/PlaylistModal';
+import { useEffect, useState } from 'react';
+import { WifiOff } from 'lucide-react';
 
 function App() {
   const { isSidebarOpen } = usePlayerStore();
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   return (
     <Router basename={import.meta.env.BASE_URL}>
@@ -31,6 +48,7 @@ function App() {
                 <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/explore" element={<ExplorePage />} />
                 <Route path="/trending" element={<TrendingPage />} />
+                <Route path="/downloads" element={<Downloads />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
@@ -39,6 +57,27 @@ function App() {
 
         <Player />
         <PlaylistModal />
+
+        {/* Offline Notification */}
+        <AnimatePresence>
+          {isOffline && (
+            <motion.div 
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-bold"
+            >
+              <WifiOff size={20} />
+              <span>You're offline. Playing from Downloads.</span>
+              <button 
+                onClick={() => window.location.href = '#/downloads'}
+                className="bg-white text-red-600 px-3 py-1 rounded-full text-xs hover:bg-red-50 transition-colors"
+              >
+                Go to Downloads
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </Router>
   );
