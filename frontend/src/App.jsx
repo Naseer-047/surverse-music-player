@@ -62,7 +62,7 @@ function App() {
         
         {/* Main Content Hub - Max Width Centered */}
         <div className="max-w-[1600px] mx-auto relative flex flex-col min-h-screen">
-          <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative flex-1 flex flex-col overflow-x-hidden`}>
+          <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative flex-1 flex flex-col`}>
             <Navbar />
             <div className="flex-1 w-full">
               <Routes>
