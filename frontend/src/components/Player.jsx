@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, CirclePlay, CirclePause, HeartHandshake, ListPlus } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
@@ -138,7 +138,7 @@ const Player = () => {
                                         onClick={isPlaying ? pauseSong : resumeSong}
                                         className="w-20 h-20 bg-slate-900 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl"
                                     >
-                                        {isPlaying ? <CirclePause size={48} fill="white" className="text-slate-900" /> : <CirclePlay size={48} fill="white" className="text-slate-900" />}
+                                        {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
                                     </button>
 
                                     <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
