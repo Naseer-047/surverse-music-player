@@ -277,71 +277,95 @@ const Player = () => {
             </AnimatePresence>
 
             {/* MINIMIZED PILL PLAYER - Bottom Center (X-axis only) */}
+            {/* NEW PREMIUM BOTTOM BAR PLAYER */}
             {!isFullScreen && (
                 <motion.div 
-                    initial={{ y: 200, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 200, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[88%] lg:w-[80%] max-w-4xl z-[60]"
+                    initial={{ y: 100 }}
+                    animate={{ y: 0 }}
+                    exit={{ y: 100 }}
+                    transition={{ duration: 0.4, ease: "circOut" }}
+                    className="fixed bottom-0 left-0 right-0 z-[60] bg-white/95 backdrop-blur-2xl border-t border-slate-200/60 shadow-[0_-10px_40px_rgba(0,0,0,0.08)] h-[72px] md:h-[88px]"
                 >
-                    <div className="bg-white/98 backdrop-blur-3xl border-2 border-slate-200 shadow-2xl rounded-full px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4 md:gap-6">
-                        {/* Album Art & Song Info */}
-                        <div onClick={toggleFullScreen} className="flex items-center gap-3 md:gap-4 flex-1 min-w-0 cursor-pointer group">
+                    {/* Integrated Top Progress Bar */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-slate-100/50">
+                        <motion.div 
+                            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                        />
+                    </div>
+
+                    <div className="max-w-[1600px] mx-auto h-full px-4 md:px-8 flex items-center justify-between gap-4">
+                        {/* 1. Song Info (Left) */}
+                        <div onClick={toggleFullScreen} className="flex items-center gap-3 md:gap-5 flex-1 min-w-0 cursor-pointer group">
                             <motion.div 
                                 layoutId="activeSongImage"
-                                className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg relative shrink-0 ring-2 ring-white"
+                                className="w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shadow-md relative shrink-0 ring-1 ring-black/5"
                             >
                                 <img 
                                     src={currentSong.image} 
                                     alt={currentSong.title}
                                     className="w-full h-full object-cover" 
                                 />
-                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                    <Maximize2 size={18} className="text-white" strokeWidth={2.5} />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                    <Maximize2 size={18} className="text-white scale-75 group-hover:scale-100 transition-transform" strokeWidth={2.5} />
                                 </div>
                             </motion.div>
-                            <div className="overflow-hidden flex-1">
-                                <h4 className="font-black tracking-tight truncate text-sm md:text-base text-slate-900">{currentSong.title}</h4>
-                                <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-wider truncate">{currentSong.artist}</p>
+                            <div className="overflow-hidden">
+                                <h4 className="font-bold tracking-tight truncate text-sm md:text-lg text-slate-900 leading-tight">{currentSong.title}</h4>
+                                <p className="text-[10px] md:text-sm text-slate-500 font-bold uppercase tracking-wider truncate mt-0.5">{currentSong.artist}</p>
                             </div>
                         </div>
 
-                        {/* Playback Controls - New Filled Icons */}
-                        <div className="flex items-center gap-3 md:gap-5 shrink-0">
+                        {/* 2. Primary Controls (Center) */}
+                        <div className="flex items-center gap-2 md:gap-8 shrink-0">
                             <button 
                                 onClick={prevSong} 
-                                className="p-3 md:p-3.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-90 hover:shadow-md"
+                                className="p-2 md:p-3 text-slate-400 hover:text-slate-900 transition-all active:scale-90"
                             >
-                                <ChevronsLeft size={24} strokeWidth={2.5} fill="currentColor" className="opacity-50" />
+                                <ChevronsLeft size={24} strokeWidth={2.5} fill="currentColor" className="opacity-40 hover:opacity-100" />
                             </button>
+                            
                             <button 
                                 onClick={isPlaying ? pauseSong : resumeSong}
-                                className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl hover:shadow-2xl"
+                                className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl hover:bg-black"
                             >
-                                {isPlaying ? <Pause size={26} fill="white" strokeWidth={0} /> : <Play size={26} fill="white" strokeWidth={0} className="ml-1" />}
+                                {isPlaying ? <Pause size={24} fill="white" strokeWidth={0} /> : <Play size={24} fill="white" strokeWidth={0} className="ml-1" />}
                             </button>
+
                             <button 
                                 onClick={nextSong} 
-                                className="p-3 md:p-3.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-90 hover:shadow-md"
+                                className="p-2 md:p-3 text-slate-400 hover:text-slate-900 transition-all active:scale-90"
                             >
-                                <ChevronsRight size={24} strokeWidth={2.5} fill="currentColor" className="opacity-50" />
+                                <ChevronsRight size={24} strokeWidth={2.5} fill="currentColor" className="opacity-40 hover:opacity-100" />
                             </button>
                         </div>
 
-                        {/* Secondary Actions - Desktop Only */}
-                        <div className="hidden md:flex items-center gap-2 shrink-0">
+                        {/* 3. Actions & Volume (Right) */}
+                        <div className="flex items-center justify-end gap-2 md:gap-6 flex-1 shrink-0">
+                            {/* Desktop only volume */}
+                            <div className="hidden lg:flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
+                                <Volume2 size={18} className="text-slate-400" />
+                                <input 
+                                    type="range" min="0" max="1" step="0.01" 
+                                    value={volume} onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                    className="w-24 h-1 bg-slate-200 rounded-full appearance-none cursor-pointer accent-slate-900"
+                                />
+                            </div>
+
                             <button 
                                 onClick={() => toggleFavorite(currentSong)}
-                                className={`p-2.5 rounded-full transition-all hover:bg-slate-100 ${favorites.some(f => f.id === currentSong.id) ? 'text-pink-500' : 'text-slate-400 hover:text-pink-500'}`}
+                                className={`p-2.5 rounded-full transition-all flex items-center justify-center ${favorites.some(f => f.id === currentSong.id) ? 'text-pink-500 bg-pink-50' : 'text-slate-400 hover:text-pink-500 hover:bg-slate-50'}`}
                             >
-                                <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} strokeWidth={2} />
+                                <Heart size={22} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} strokeWidth={2} />
                             </button>
+
                             <button 
                                 onClick={toggleFullScreen} 
-                                className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all"
+                                className="hidden md:flex p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-full transition-all"
                             >
-                                <Maximize2 size={18} strokeWidth={2.5} />
+                                <Maximize2 size={20} strokeWidth={2.5} />
                             </button>
                         </div>
                     </div>
