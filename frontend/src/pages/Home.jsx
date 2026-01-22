@@ -302,7 +302,7 @@ const Home = () => {
     };
 
     return (
-        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-0 pt-20 md:pt-32">
+        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-0 pt-36 md:pt-32">
             
             {/* 0. LOADING SCREEN */}
             <AnimatePresence mode="wait">
@@ -419,6 +419,19 @@ const Home = () => {
                                             </div>
                                         </div>
                                     ))}
+                                    
+                                    {/* View All Card */}
+                                    <div 
+                                        className="relative flex-none w-[70vw] snap-center aspect-[3/4] rounded-[2rem] overflow-hidden group shadow-xl bg-black flex items-center justify-center cursor-pointer"
+                                        onClick={() => navigate('/trending')}
+                                    >
+                                        <div className="text-center">
+                                            <h4 className="text-4xl font-black italic text-white mb-4 tracking-tighter">Explore<br/>Top 50</h4>
+                                            <div className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center mx-auto shadow-lg animate-pulse">
+                                                <ArrowRight size={32} />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* DESKTOP: Vertical List */}

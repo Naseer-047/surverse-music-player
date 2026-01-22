@@ -44,7 +44,7 @@ const ExplorePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F8F8] pb-32">
+        <div className="min-h-screen bg-[#F8F8F8] pt-36 pb-32">
             
             {/* Category Results Overlay */}
             <AnimatePresence>

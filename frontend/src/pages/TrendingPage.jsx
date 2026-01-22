@@ -27,7 +27,7 @@ const TrendingPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F8F8] p-6 lg:p-12 pb-32">
+        <div className="min-h-screen bg-[#F8F8F8] pt-36 p-6 lg:p-12 pb-32">
             <header className="flex justify-between items-end mb-16">
                 <div>
                     <h1 className="text-4xl md:text-7xl font-black italic tracking-tighter mb-4">Sonic Surge</h1>
