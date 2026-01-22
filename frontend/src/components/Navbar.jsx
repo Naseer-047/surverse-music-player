@@ -24,15 +24,15 @@ const Navbar = () => {
                     <h1 className="text-xl font-black tracking-tighter uppercase italic hidden md:block">SurVerse</h1>
                 </div>
 
-                {/* DESKTOP SEARCH */}
-                <form onSubmit={handleSubmit} className="hidden md:flex flex-1 max-w-xl mx-2 md:mx-24 relative">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 opacity-20" />
+                {/* DESKTOP SEARCH (Soft Shadow Pill) */}
+                <form onSubmit={handleSubmit} className="hidden md:flex flex-1 max-w-xl mx-2 md:mx-24 relative group">
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40 group-focus-within:text-black transition-colors" />
                     <input 
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="Search..."
-                        className="w-full bg-black/5 border-none rounded-full py-3 pl-16 pr-8 text-sm font-bold focus:ring-1 focus:ring-black/10 transition-all placeholder:text-black/20"
+                        className="w-full bg-[#F2F2F2] hover:bg-[#EBEBEB] focus:bg-white border-none rounded-full py-3.5 pl-14 pr-8 text-sm font-bold focus:ring-0 focus:shadow-xl transition-all duration-300 placeholder:text-black/30 text-black"
                     />
                 </form>
 
