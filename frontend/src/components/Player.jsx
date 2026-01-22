@@ -17,8 +17,17 @@ const Player = () => {
 
     useEffect(() => {
         if (audioRef.current && currentSong) {
-            if (isPlaying) audioRef.current.play();
-            else audioRef.current.pause();
+            if (isPlaying) {
+                const playPromise = audioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error("Playback failed:", error);
+                        // Auto-play might be blocked by browser policy
+                    });
+                }
+            } else {
+                audioRef.current.pause();
+            }
         }
     }, [isPlaying, currentSong]);
 

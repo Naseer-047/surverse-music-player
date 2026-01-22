@@ -1,11 +1,66 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import usePlayerStore from '../store/playerStore';
 import { Play, Search, ArrowRight, Music2, Heart, MoreHorizontal, Clock, Star, Sparkles, X, ChevronLeft, ChevronRight, TrendingUp, Disc, Mic, Calendar, Radio, Headphones, Globe, MapPin, Ticket, Plus, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../components/Footer';
 
+const LoadingScreen = () => (
+    <motion.div 
+        key="loading-screen"
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0, scale: 1.05 }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+        className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+    >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-500/10 via-black to-black" />
+        <div className="relative">
+            <motion.h1 
+                initial={{ filter: "blur(20px)", opacity: 0, letterSpacing: "0.2em" }}
+                animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "-0.05em" }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="text-6xl md:text-[10rem] font-black italic tracking-tighter text-white select-none"
+            >
+                SURVERSE
+            </motion.h1>
+            <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/20 to-transparent blur-3xl"
+                animate={{ x: ['-100%', '100%'] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            />
+        </div>
+        <div className="mt-12 flex flex-col items-center gap-6">
+            <div className="flex gap-2 h-8 items-center">
+                {[...Array(5)].map((_, i) => (
+                    <motion.div 
+                        key={i}
+                        animate={{ height: [4, 32, 4], opacity: [0.1, 1, 0.1] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
+                        className="w-1 md:w-1.5 bg-orange-500 rounded-full"
+                    />
+                ))}
+            </div>
+            <motion.div 
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="flex flex-col items-center gap-2"
+            >
+                <p className="text-[8px] md:text-[10px] font-black tracking-[0.5em] text-white uppercase">Initializing Sonic Core</p>
+                <div className="w-32 h-[1px] bg-white/10 relative overflow-hidden">
+                    <motion.div 
+                        className="absolute inset-0 bg-orange-500"
+                        animate={{ left: ['-100%', '100%'] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                </div>
+            </motion.div>
+        </div>
+    </motion.div>
+);
+
 const Home = () => {
-    const { playSong, setQueue, searchQuery, playlists, openPlaylistModal, addToPlaylist, toggleFavorite, favorites } = usePlayerStore();
+    const navigate = useNavigate();
+    const { playSong, setQueue, searchQuery, playlists, openPlaylistModal, addToPlaylist, toggleFavorite, favorites, setSearchQuery } = usePlayerStore();
     const [trending, setTrending] = useState([]);
     const [newArrivals, setNewArrivals] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
@@ -15,6 +70,8 @@ const Home = () => {
     const [fullChartSongs, setFullChartSongs] = useState([]);
     const [heroSong, setHeroSong] = useState(null);
     const [heroVideoId, setHeroVideoId] = useState(null);
+    const [trendingArtists, setTrendingArtists] = useState([]);
+    const [indieSongs, setIndieSongs] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const moodReelRef = useRef(null);
@@ -30,21 +87,6 @@ const Home = () => {
         { name: 'Focus Mix', color: 'bg-indigo-100', artists: 'Piano, Ambient, Noise', query: 'instrumental' }
     ];
 
-    const indieArtists = [
-        { name: "Prateek Kuhad", genre: "Indie Folk", img: "https://ui-avatars.com/api/?name=Prateek+Kuhad&background=random" },
-        { name: "The Local Train", genre: "Hindi Rock", img: "https://ui-avatars.com/api/?name=The+Local+Train&background=random" },
-        { name: "When Chai Met Toast", genre: "Happy Folk", img: "https://ui-avatars.com/api/?name=When+Chai+Met+Toast&background=random" },
-        { name: "Ritviz", genre: "Electronic", img: "https://ui-avatars.com/api/?name=Ritviz&background=random" },
-        { name: "Lifafa", genre: "Alternative", img: "https://ui-avatars.com/api/?name=Lifafa&background=random" }
-    ];
-
-    const moods = [
-        { name: 'Love', image: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?q=80&w=1200' },
-        { name: 'Sad', image: 'https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=1200' },
-        { name: 'Gym', image: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1200' },
-        { name: 'Soul', image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200' },
-        { name: 'Night', image: 'https://images.unsplash.com/photo-1531317135081-37cd88df67b6?q=80&w=1200' },
-    ];
 
     useEffect(() => {
         fetchData();
@@ -79,31 +121,64 @@ const Home = () => {
         try {
             const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
             
-            // Random Queries for variety
-            const trendingQueries = ['top global hits', 'viral tiktok songs', 'billboard top 100', 'global viral 50', 'hits 2024'];
-            const newQueries = ['new bollywood songs 2024', 'latest punjabi hits', 'fresh hindi pop', 'new indian hip hop', 'latest party anthems'];
-            
-            const randomTrendingQuery = trendingQueries[Math.floor(Math.random() * trendingQueries.length)];
-            const randomNewQuery = newQueries[Math.floor(Math.random() * newQueries.length)];
+            // 1. Fetch Specific Pinned Songs for Global Top 5
+            const pinnedQueries = [
+                'Chhor Denge',
+                'Aaj Se Teri',
+                'Dhurandhar Title Track',
+                'Tum Kyu Chale Aate Ho',
+                'Tum Hi Ho',
+                'Pal Pal Dil Ke Paas'
+            ];
 
-            const [trendingRes, newRes] = await Promise.all([
-                fetch(`${baseUrl}/api/search?q=${randomTrendingQuery}`),
-                fetch(`${baseUrl}/api/search?q=${randomNewQuery}`)
+            const pinnedPromises = pinnedQueries.map(q => 
+                fetch(`${baseUrl}/api/search?q=${q}`).then(res => res.json())
+            );
+
+            // 2. Fetch New Arrivals (Randomized for variety)
+            const newQueries = ['new bollywood songs 2024', 'latest punjabi hits', 'fresh hindi pop', 'new indian hip hop', 'latest party anthems'];
+            const randomNewQuery = newQueries[Math.floor(Math.random() * newQueries.length)];
+            const newResPromise = fetch(`${baseUrl}/api/search?q=${randomNewQuery}`).then(res => res.json());
+
+            const [pinnedResults, newData] = await Promise.all([
+                Promise.all(pinnedPromises),
+                newResPromise
             ]);
             
-            const trendingData = await trendingRes.json();
-            const newData = await newRes.json();
-            
-            // Shuffle and filter results
-            const filteredTrending = shuffleArray(filterSongs(trendingData));
-            setTrending(filteredTrending.slice(0, 10));
+            // Extract the first match for each pinned song
+            const curatedTrending = pinnedResults.map(results => results[0]).filter(Boolean);
+            setTrending(curatedTrending);
             
             const filteredNew = filterSongs(newData);
-            // Shuffle new arrivals too
             setNewArrivals(filteredNew.length > 0 ? shuffleArray(filteredNew).slice(0, 20) : []); 
 
-            // Pick a Random Hero Song from combined Top Results
-            const allInitialSongs = [...filteredTrending, ...filteredNew];
+            // 3. Fetch Trending Artists (Real Data)
+            const artistQuery = 'top indian singers 2024';
+            const artistRes = await fetch(`${baseUrl}/api/search?q=${artistQuery}`);
+            const artistData = await artistRes.json();
+            // Extract unique artists and their images
+            const uniqueArtists = [];
+            const seenArtists = new Set();
+            artistData.forEach(song => {
+                if (!seenArtists.has(song.artist) && uniqueArtists.length < 10) {
+                    seenArtists.add(song.artist);
+                    uniqueArtists.push({
+                        name: song.artist,
+                        genre: "Trending Artist",
+                        img: song.image.replace('150x150', '500x500')
+                    });
+                }
+            });
+            setTrendingArtists(uniqueArtists);
+
+            // 4. Fetch Indie Spotlight (Real Data)
+            const indieQuery = 'indian indie hits 2024';
+            const indieRes = await fetch(`${baseUrl}/api/search?q=${indieQuery}`);
+            const indieData = await indieRes.json();
+            setIndieSongs(filterSongs(indieData).slice(0, 4));
+
+            // Pick a Random Hero Song from combined results
+            const allInitialSongs = [...curatedTrending, ...filteredNew, ...filterSongs(indieData)];
             if (allInitialSongs.length > 0) {
                 const randomHero = allInitialSongs[Math.floor(Math.random() * allInitialSongs.length)];
                 setHeroSong(randomHero);
@@ -113,7 +188,8 @@ const Home = () => {
             console.error("Failed to fetch data", error);
             setNewArrivals([]);
         } finally {
-            setLoading(false);
+            // Add a small artificial delay for the premium feel if loading is too fast
+            setTimeout(() => setLoading(false), 2000);
         }
     };
 
@@ -219,8 +295,13 @@ const Home = () => {
     };
 
     return (
-        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-32">
+        <div className="bg-[#FAFAFA] min-h-screen text-slate-900 select-none pb-0 pt-20 md:pt-32">
             
+            {/* 0. LOADING SCREEN */}
+            <AnimatePresence mode="wait">
+                {loading && <LoadingScreen />}
+            </AnimatePresence>
+
             {/* Search/Mood/Chart Results Overlay */}
             <AnimatePresence mode="wait">
                 {(searchResults.length > 0 || activeMood || isFullChartActive) ? (
@@ -287,8 +368,54 @@ const Home = () => {
                     </motion.div>
                 ) : (
                     <>
-                        {/* 1. HERO SECTION - REDESIGNED */}
-                        <section className="relative h-[60vh] md:h-[80vh] w-full mt-2 md:mt-4 overflow-hidden mx-auto max-w-[98%] rounded-[2.5rem] md:rounded-[4rem] shadow-2xl group border border-black/5 bg-black">
+                        {/* 1. GLOBAL CHART (Now at Top) */}
+                        <section className="section-padding py-8 md:py-16">
+                            <div className="flex justify-between items-end mb-8 md:mb-12">
+                                <div>
+                                    <h3 className="text-2xl md:text-5xl font-black italic tracking-tighter mb-2">Global Top Hits</h3>
+                                    <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">The world is listening</p>
+                                </div>
+                                <button 
+                                    onClick={() => navigate('/trending')}
+                                    className="text-[10px] md:text-xs font-bold border-b border-black pb-1 hover:text-orange-500 hover:border-orange-500 transition-colors"
+                                >
+                                    VIEW ALL
+                                </button>
+                            </div>
+                            <div className="space-y-4">
+                                {trending.slice(0, 6).map((song, idx) => (
+                                    <div key={song.id} className="flex items-center gap-4 md:gap-8 p-4 md:p-6 bg-white rounded-[2rem] border border-black/5 hover:bg-black hover:text-white transition-all group cursor-pointer" onClick={() => { setQueue(trending); playSong(song, idx); }}>
+                                        <span className="text-2xl md:text-4xl font-black italic opacity-20 w-8 md:w-12 text-center group-hover:text-white/20">{idx + 1}</span>
+                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl overflow-hidden shadow-md ">
+                                            <img src={song.image} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-sm md:text-xl font-bold truncate">{song.title}</h4>
+                                            <p className="text-[10px] md:text-xs opacity-50 font-bold uppercase truncate">{song.artist}</p>
+                                        </div>
+                                        <div className="flex flex-col items-end opacity-40 group-hover:opacity-100 whitespace-nowrap">
+                                             <span className="text-[10px] md:text-xs font-bold">12.4M</span>
+                                             <TrendingUp size={14} className="mt-1 text-green-500" />
+                                        </div>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); toggleFavorite(song); }}
+                                            className={`p-3 opacity-0 group-hover:opacity-100 transition-all invisible md:visible ${favorites.some(f => f.id === song.id) ? 'text-red-500' : 'hover:text-red-500'}`}
+                                        >
+                                            <Heart size={20} fill={favorites.some(f => f.id === song.id) ? "currentColor" : "none"} />
+                                        </button>
+                                        <button 
+                                            onClick={(e) => { e.stopPropagation(); openPlaylistModal(song); }}
+                                            className="p-3 opacity-0 group-hover:opacity-100 hover:text-green-500 transition-all invisible md:visible"
+                                        >
+                                            <Plus size={20} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* 2. HERO SECTION - REDESIGNED & HEIGHT INCREASED */}
+                        <section className="relative h-[70vh] md:h-[95vh] w-full mt-2 md:mt-4 overflow-hidden mx-auto max-w-[98%] rounded-[2.5rem] md:rounded-[4rem] shadow-2xl group border border-black/5 bg-black">
                             {/* Video Background */}
                             <div className="absolute inset-0 pointer-events-none overflow-hidden">
                                 {heroVideoId ? (
@@ -344,7 +471,15 @@ const Home = () => {
 
                                         <div className="flex items-center gap-4">
                                             <button 
-                                                onClick={() => heroSong && playSong(heroSong, 0)} 
+                                                onClick={() => {
+                                                    if (heroSong) {
+                                                        const combinedQueue = [...trending, ...newArrivals, ...indieSongs];
+                                                        setQueue(combinedQueue);
+                                                        // Find index in combined queue or default to 0
+                                                        const idx = combinedQueue.findIndex(s => s.id === heroSong.id);
+                                                        playSong(heroSong, idx !== -1 ? idx : 0);
+                                                    }
+                                                }} 
                                                 className="group relative bg-white hover:bg-orange-500 text-black hover:text-white px-8 py-4 md:px-12 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-xs md:text-base tracking-[0.2em] transition-all duration-500 flex items-center gap-3 shadow-2xl hover:scale-105 active:scale-95"
                                             >
                                                 <Play size={24} fill="currentColor" className="group-hover:rotate-12 transition-transform" /> 
@@ -379,7 +514,7 @@ const Home = () => {
                             </div>
                         </section>
 
-                        {/* 2. QUICK PICKS */}
+                        {/* 3. QUICK PICKS */}
                         <section className="section-padding py-12 md:py-24">
                             <h3 className="text-2xl md:text-3xl font-black italic tracking-tighter mb-6 md:mb-8">Quick Picks</h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -395,47 +530,6 @@ const Home = () => {
                                         <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hidden md:flex">
                                             <Play size={12} fill="currentColor" className="ml-0.5"/>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-
-                        {/* 3. GLOBAL CHART */}
-                        <section className="section-padding py-8 md:py-12">
-                            <div className="flex justify-between items-end mb-8 md:mb-12">
-                                <div>
-                                    <h3 className="text-2xl md:text-5xl font-black italic tracking-tighter mb-2">Global Top 5</h3>
-                                    <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">The world is listening</p>
-                                </div>
-                                <button className="text-[10px] md:text-xs font-bold border-b border-black pb-1">VIEW ALL</button>
-                            </div>
-                            <div className="space-y-4">
-                                {trending.slice(0, 5).map((song, idx) => (
-                                    <div key={song.id} className="flex items-center gap-4 md:gap-8 p-4 md:p-6 bg-white rounded-[2rem] border border-black/5 hover:bg-black hover:text-white transition-all group cursor-pointer" onClick={() => { setQueue(trending); playSong(song, idx); }}>
-                                        <span className="text-2xl md:text-4xl font-black italic opacity-20 w-8 md:w-12 text-center group-hover:text-white/20">{idx + 1}</span>
-                                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl overflow-hidden shadow-md ">
-                                            <img src={song.image} className="w-full h-full object-cover" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="text-sm md:text-xl font-bold truncate">{song.title}</h4>
-                                            <p className="text-[10px] md:text-xs opacity-50 font-bold uppercase truncate">{song.artist}</p>
-                                        </div>
-                                        <div className="flex flex-col items-end opacity-40 group-hover:opacity-100 whitespace-nowrap">
-                                             <span className="text-[10px] md:text-xs font-bold">12.4M</span>
-                                             <TrendingUp size={14} className="mt-1 text-green-500" />
-                                        </div>
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); toggleFavorite(song); }}
-                                            className={`p-3 opacity-0 group-hover:opacity-100 transition-all invisible md:visible ${favorites.some(f => f.id === song.id) ? 'text-red-500' : 'hover:text-red-500'}`}
-                                        >
-                                            <Heart size={20} fill={favorites.some(f => f.id === song.id) ? "currentColor" : "none"} />
-                                        </button>
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); openPlaylistModal(song); }}
-                                            className="p-3 opacity-0 group-hover:opacity-100 hover:text-green-500 transition-all invisible md:visible"
-                                        >
-                                            <Plus size={20} />
-                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -470,10 +564,16 @@ const Home = () => {
                                     <h3 className="text-3xl md:text-5xl font-black italic tracking-tighter mb-2">Trending Artists</h3>
                                     <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">Who is taking over</p>
                                 </div>
+                                <button 
+                                    onClick={() => navigate('/explore')}
+                                    className="text-[10px] md:text-xs font-bold border-b border-black pb-1 hover:text-orange-500 hover:border-orange-500 transition-colors"
+                                >
+                                    VIEW ALL
+                                </button>
                             </div>
                             <div className="flex overflow-x-auto gap-6 md:gap-12 pb-8 scrollbar-hide snap-x">
-                                {indieArtists.concat(indieArtists).map((artist, i) => (
-                                    <div key={i} className="flex flex-col items-center gap-4 shrink-0 snap-center group cursor-pointer">
+                                {trendingArtists.map((artist, i) => (
+                                    <div key={i} className="flex flex-col items-center gap-4 shrink-0 snap-center group cursor-pointer" onClick={() => handleSearch(artist.name)}>
                                         <div className="w-28 h-28 md:w-56 md:h-56 rounded-full p-1 border-2 border-transparent group-hover:border-black/10 transition-all duration-500 relative">
                                             <div className="w-full h-full rounded-full overflow-hidden relative shadow-lg group-hover:shadow-2xl transition-all">
                                                 <img src={artist.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
@@ -482,8 +582,8 @@ const Home = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="text-center">
-                                            <h4 className="text-sm md:text-xl font-black tracking-tight mb-1">{artist.name}</h4>
+                                        <div className="text-center max-w-[120px] md:max-w-[200px]">
+                                            <h4 className="text-sm md:text-xl font-black tracking-tight mb-1 truncate">{artist.name}</h4>
                                             <p className="text-[10px] md:text-xs font-bold opacity-40 uppercase tracking-widest">{artist.genre}</p>
                                         </div>
                                     </div>
@@ -498,6 +598,12 @@ const Home = () => {
                                     <h3 className="text-2xl md:text-5xl font-black italic tracking-tighter mb-2">Fresh Arrivals</h3>
                                     <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">Just landed from the studio</p>
                                 </div>
+                                <button 
+                                    onClick={() => navigate('/explore')}
+                                    className="text-[10px] md:text-xs font-bold border-b border-black pb-1 hover:text-orange-500 hover:border-orange-500 transition-colors"
+                                >
+                                    VIEW ALL
+                                </button>
                             </div>
                             <div className="flex overflow-x-auto gap-4 md:gap-8 pb-8 scrollbar-hide snap-x">
                                 {newArrivals.map((song, i) => (
@@ -529,22 +635,49 @@ const Home = () => {
                             </div>
                         </section>
 
-                        {/* 7. VIBE STATION */}
-                        <section className="section-padding py-12 md:py-24">
-                            <h3 className="text-2xl md:text-5xl font-black italic tracking-tighter mb-8 md:mb-12">Vibe Station</h3>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                                {moods.map((mood, i) => (
-                                    <div key={i} onClick={() => handleMoodClick(mood.name)} className={`aspect-[4/3] rounded-[2rem] relative overflow-hidden group cursor-pointer ${i === 0 ? 'col-span-2 row-span-2 md:col-span-2 md:row-span-2 aspect-square' : ''}`}>
-                                        <img src={mood.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
-                                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
-                                        <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6">
-                                            <h4 className={`font-black italic tracking-tighter text-white ${i === 0 ? 'text-4xl md:text-6xl' : 'text-xl md:text-3xl'}`}>{mood.name}</h4>
-                                        </div>
-                                        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <ArrowRight className="text-white" size={i === 0 ? 32 : 16} />
-                                        </div>
+                        {/* 7. INDIE SPOTLIGHT (New Section) */}
+                        <section className="section-padding py-12 md:py-24 bg-black text-white rounded-[3rem] md:rounded-[5rem] mx-2 md:mx-4 my-12 overflow-hidden relative group">
+                            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none group-hover:bg-orange-500/20 transition-all duration-1000" />
+                            
+                            <div className="relative z-10">
+                                <div className="flex justify-between items-end mb-12 md:mb-20">
+                                    <div>
+                                        <span className="text-[10px] md:text-xs font-black tracking-[0.4em] uppercase opacity-40 mb-4 block">Sonic Underground</span>
+                                        <h3 className="text-4xl md:text-7xl font-black italic tracking-tighter mb-2">Indie <span className="text-orange-500">Spotlight</span></h3>
+                                        <p className="text-[10px] md:text-sm font-bold opacity-40 uppercase tracking-widest">Discover the next big sound before everyone else</p>
                                     </div>
-                                ))}
+                                    <button 
+                                        onClick={() => handleSearch('indian indie hits 2024')}
+                                        className="text-[10px] md:text-xs font-bold border-b border-orange-500 pb-1 text-orange-500 hover:text-white hover:border-white transition-colors"
+                                    >
+                                        EXPLORE INDIE
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {indieSongs.map((song, i) => (
+                                        <div key={i} className="group/artist relative aspect-[3/4] rounded-[2.5rem] overflow-hidden cursor-pointer" onClick={() => { setQueue(indieSongs); playSong(song, i); }}>
+                                            <img src={song.image.replace('150x150', '500x500')} className="w-full h-full object-cover grayscale group-hover/artist:grayscale-0 group-hover/artist:scale-110 transition-all duration-700" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-60 group-hover/artist:opacity-90 transition-opacity" />
+                                            
+                                            <div className="absolute bottom-6 left-6 right-6">
+                                                <div className="mb-2 flex items-center gap-2">
+                                                    <span className="w-8 h-[2px] bg-orange-500" />
+                                                    <span className="text-[8px] md:text-[10px] font-black tracking-widest uppercase text-orange-500">INDIE HIT</span>
+                                                </div>
+                                                <h4 className="text-2xl md:text-3xl font-black italic tracking-tighter leading-none mb-2 group-hover/artist:text-orange-500 transition-colors truncate">{song.title}</h4>
+                                                <p className="text-sm font-bold opacity-60 uppercase mb-4 truncate">{song.artist}</p>
+                                                
+                                                <div className="flex items-center justify-between opacity-0 translate-y-4 group-hover/artist:opacity-100 group-hover/artist:translate-y-0 transition-all duration-500">
+                                                    <p className="text-[10px] font-bold opacity-40 uppercase">Click to play track</p>
+                                                    <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/artist:bg-orange-500 group-hover/artist:text-white transition-all shadow-lg">
+                                                        <Play size={16} fill="currentColor" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </section>
 

@@ -18,7 +18,7 @@ function App() {
     <Router basename={import.meta.env.BASE_URL}>
       <div className="min-h-screen bg-[#F8F8F8]">
         <Sidebar />
-        <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative pb-32`}>
+        <main className={`${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 relative pb-0`}>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />

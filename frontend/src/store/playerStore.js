@@ -13,10 +13,10 @@ const usePlayerStore = create((set) => ({
     toggleFullScreen: () => set((state) => ({ isFullScreen: !state.isFullScreen })),
     toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
     setQueue: (newQueue) => set({ queue: newQueue }),
-    playSong: (song, index = -1) => set({ 
+    playSong: (song, index = 0) => set({ 
         currentSong: song, 
         isPlaying: true, 
-        currentIndex: index !== -1 ? index : undefined 
+        currentIndex: index 
     }),
     pauseSong: () => set({ isPlaying: false }),
     resumeSong: () => set({ isPlaying: true }),
