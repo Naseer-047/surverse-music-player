@@ -159,30 +159,38 @@ const Home = () => {
             setNewArrivals(uniqueNewArrivals); 
 
             // 3. Fetch Trending Artists (Real Data)
-            const artistQuery = 'top indian singers 2024';
-            const artistRes = await fetch(`${baseUrl}/api/search?q=${artistQuery}`);
-            const artistData = await artistRes.json();
-            // Extract unique artists and their images
-            const uniqueArtists = [];
-            const seenArtists = new Set();
-            artistData.forEach(song => {
-                if (!seenArtists.has(song.artist) && uniqueArtists.length < 10) {
-                    seenArtists.add(song.artist);
-                    uniqueArtists.push({
-                        name: song.artist,
-                        genre: "Trending Artist",
-                        img: song.image.replace('150x150', '500x500')
-                    });
-                }
-            });
-            setTrendingArtists(uniqueArtists);
+            try {
+                const artistQuery = 'top indian singers 2024';
+                const artistRes = await fetch(`${baseUrl}/api/search?q=${artistQuery}`);
+                const artistData = await artistRes.json();
+                // Extract unique artists and their images
+                const uniqueArtists = [];
+                const seenArtists = new Set();
+                artistData.forEach(song => {
+                    if (!seenArtists.has(song.artist) && uniqueArtists.length < 10) {
+                        seenArtists.add(song.artist);
+                        uniqueArtists.push({
+                            name: song.artist,
+                            genre: "Trending Artist",
+                            img: song.image.replace('150x150', '500x500')
+                        });
+                    }
+                });
+                setTrendingArtists(uniqueArtists);
+            } catch (e) {
+                console.error("Artist fetch failed", e);
+            }
 
             // 4. Fetch Indie Spotlight (Real Data) - Filter Duplicates by Key
-            const indieQuery = 'indian indie hits 2024';
-            const indieRes = await fetch(`${baseUrl}/api/search?q=${indieQuery}`);
-            const indieData = await indieRes.json();
-            const filteredIndie = filterSongs(indieData).filter(song => !seenKeys.has(getSongKey(song))).slice(0, 4);
-            setIndieSongs(filteredIndie);
+            try {
+                const indieQuery = 'indian indie hits 2024';
+                const indieRes = await fetch(`${baseUrl}/api/search?q=${indieQuery}`);
+                const indieData = await indieRes.json();
+                const filteredIndie = filterSongs(indieData).filter(song => !seenKeys.has(getSongKey(song))).slice(0, 4);
+                setIndieSongs(filteredIndie);
+            } catch (e) {
+                console.error("Indie fetch failed", e);
+            }
 
             // Pick a Random Hero Song from combined results
             const allInitialSongs = [...curatedTrending, ...uniqueNewArrivals, ...filteredIndie];
@@ -195,8 +203,13 @@ const Home = () => {
             console.error("Failed to fetch data", error);
             setNewArrivals([]);
         } finally {
-            // Add a small artificial delay for the premium feel if loading is too fast
-            setTimeout(() => setLoading(false), 2000);
+            // If offline, bypass the delay for instant access to any local/cached state
+            if (!navigator.onLine) {
+                setLoading(false);
+            } else {
+                // Add a small artificial delay for the premium feel if loading is too fast
+                setTimeout(() => setLoading(false), 2000);
+            }
         }
     };
 

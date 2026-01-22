@@ -362,31 +362,32 @@ const Player = () => {
                         </div>
 
                         {/* 3. Actions & Volume (Right) */}
-                        <div className="flex items-center justify-end gap-2 md:gap-6 flex-1 shrink-0">
-                            {/* Desktop only volume */}
-                            <div className="hidden lg:flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-full border border-slate-100">
-                                <Volume2 size={18} className="text-slate-400" />
-                                <input 
-                                    type="range" min="0" max="1" step="0.01" 
-                                    value={volume} onChange={(e) => setVolume(parseFloat(e.target.value))}
-                                    className="w-24 h-1 bg-slate-200 rounded-full appearance-none cursor-pointer accent-slate-900"
-                                />
-                            </div>
-
+                        <div className="flex items-center justify-end gap-1 md:gap-4 flex-1 shrink-0">
                             <button 
                                 onClick={handleDownload}
                                 disabled={isDownloading}
-                                className={`p-2.5 rounded-full transition-all flex items-center justify-center ${isDownloading ? 'text-blue-500 animate-pulse' : 'text-slate-400 hover:text-blue-500 hover:bg-slate-50'}`}
+                                className={`p-2 rounded-full transition-all flex items-center justify-center ${isDownloading ? 'text-blue-500 animate-pulse' : 'text-slate-400 hover:text-blue-500 hover:bg-slate-50'}`}
                                 title="Download for offline"
                             >
-                                <Download size={22} strokeWidth={2} />
+                                <Download size={20} className="md:w-6 md:h-6" strokeWidth={2} />
+                            </button>
+
+                            <button 
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    openPlaylistModal(currentSong);
+                                }}
+                                className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-50 rounded-full transition-all"
+                                title="Add to playlist"
+                            >
+                                <Plus size={20} className="md:w-6 md:h-6" strokeWidth={2.5} />
                             </button>
 
                             <button 
                                 onClick={() => toggleFavorite(currentSong)}
-                                className={`p-2.5 rounded-full transition-all flex items-center justify-center ${favorites.some(f => f.id === currentSong.id) ? 'text-pink-500 bg-pink-50' : 'text-slate-400 hover:text-pink-500 hover:bg-slate-50'}`}
+                                className={`p-2 rounded-full transition-all flex items-center justify-center ${favorites.some(f => f.id === currentSong.id) ? 'text-pink-500 bg-pink-50' : 'text-slate-400 hover:text-pink-500 hover:bg-slate-50'}`}
                             >
-                                <Heart size={22} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} strokeWidth={2} />
+                                <Heart size={20} className="md:w-6 md:h-6" fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} strokeWidth={2} />
                             </button>
 
                             <button 

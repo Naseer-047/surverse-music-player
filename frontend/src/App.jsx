@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import usePlayerStore from './store/playerStore';
@@ -14,6 +14,16 @@ import PlaylistModal from './components/PlaylistModal';
 import { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const OfflineHandler = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!navigator.onLine) {
+            navigate('/downloads');
+        }
+    }, [navigate]);
+    return null;
+};
 
 function App() {
   const { isSidebarOpen, setDeferredPrompt } = usePlayerStore();
@@ -44,8 +54,9 @@ function App() {
   }, [setDeferredPrompt]);
 
   return (
-    <Router basename={import.meta.env.BASE_URL}>
+    <Router>
       <div className="relative min-h-screen bg-[#F8F8F8]">
+        <OfflineHandler />
         {/* Sidebar remains fixed but is managed by the layout push */}
         <Sidebar />
         
@@ -70,23 +81,27 @@ function App() {
         <Player />
         <PlaylistModal />
 
-        {/* Offline Notification */}
+        {/* Offline Notification - Top Banner */}
         <AnimatePresence>
           {isOffline && (
             <motion.div 
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 50, opacity: 0 }}
-              className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] bg-red-600 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-bold"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="fixed top-0 left-0 right-0 z-[200] bg-red-600 text-white shadow-lg overflow-hidden"
             >
-              <WifiOff size={20} />
-              <span>You're offline. Playing from Downloads.</span>
-              <button 
-                onClick={() => window.location.href = '#/downloads'}
-                className="bg-white text-red-600 px-3 py-1 rounded-full text-xs hover:bg-red-50 transition-colors"
-              >
-                Go to Downloads
-              </button>
+              <div className="px-6 py-3 flex items-center justify-between font-black">
+                <div className="flex items-center gap-3">
+                  <WifiOff size={18} className="animate-pulse" />
+                  <span className="text-[10px] md:text-sm tracking-[0.2em] uppercase">Offline Mode Active</span>
+                </div>
+                <Link 
+                  to="/downloads"
+                  className="bg-white text-red-600 px-4 py-1 rounded-full text-[10px] uppercase tracking-widest hover:bg-red-50 transition-colors"
+                >
+                  Offline Store
+                </Link>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
