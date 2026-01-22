@@ -24,7 +24,7 @@ const PlaylistPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F8F8F8] p-6 pb-32 lg:p-12">
+        <div className="min-h-screen bg-[#F8F8F8] p-6 pb-32 pt-36 lg:p-12">
             <div className="flex justify-between items-end mb-12">
                 <div>
                     <h1 className="text-4xl md:text-6xl font-black italic tracking-tighter mb-2">Your Vault</h1>

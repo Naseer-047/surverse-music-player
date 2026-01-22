@@ -37,31 +37,34 @@ const Navbar = () => {
                 </form>
 
                 {/* MOBILE SEARCH OVERLAY (FIXED & LARGER) */}
-                {isMobileSearchOpen && (
-                    <motion.form 
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="absolute inset-x-0 top-0 bottom-0 bg-white z-50 flex items-center px-4 gap-4 md:hidden shadow-xl rounded-b-3xl h-[120%]"
-                        onSubmit={(e) => { handleSubmit(e); setIsMobileSearchOpen(false); }}
-                    >
-                        <Search className="w-6 h-6 opacity-40" />
-                        <input 
-                            autoFocus
-                            type="text"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search songs, artists..."
-                            className="flex-1 bg-transparent border-none text-lg font-bold focus:ring-0 placeholder:text-black/20 h-full"
-                        />
-                         <button 
-                            type="button"
-                            className="w-10 h-10 flex items-center justify-center bg-black/5 rounded-full"
-                            onClick={() => setIsMobileSearchOpen(false)}
+                <AnimatePresence>
+                    {isMobileSearchOpen && (
+                        <motion.form 
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="absolute inset-x-0 top-0 h-[100px] bg-white z-[70] flex items-center px-6 gap-4 shadow-2xl md:hidden"
+                            onSubmit={(e) => { handleSubmit(e); setIsMobileSearchOpen(false); }}
                         >
-                            <i className="not-italic font-bold text-lg">✕</i>
-                        </button>
-                    </motion.form>
-                )}
+                            <Search className="w-6 h-6 text-black shrink-0" />
+                            <input 
+                                autoFocus
+                                type="text"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                placeholder="Search..."
+                                className="flex-1 bg-transparent border-none text-xl font-black text-black focus:ring-0 placeholder:text-black/20 h-full p-0"
+                            />
+                             <button 
+                                type="button"
+                                className="w-12 h-12 flex items-center justify-center bg-black/5 rounded-full shrink-0 active:scale-90 transition-transform"
+                                onClick={() => setIsMobileSearchOpen(false)}
+                            >
+                                <X size={24} />
+                            </button>
+                        </motion.form>
+                    )}
+                </AnimatePresence>
 
                 <div className="flex items-center gap-4 md:gap-8 shrink-0">
                     <button className="hidden lg:flex items-center gap-2 text-[10px] font-black uppercase tracking-widest opacity-30 hover:opacity-100 transition-opacity">
