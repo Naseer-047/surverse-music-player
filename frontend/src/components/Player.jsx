@@ -276,21 +276,21 @@ const Player = () => {
                 )}
             </AnimatePresence>
 
-            {/* MINIMIZED PILL PLAYER - Modern & Clean */}
+            {/* MINIMIZED PILL PLAYER - Fully Rounded & Modern */}
             {!isFullScreen && (
                 <motion.div 
                     initial={{ y: 200, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 200, opacity: 0 }}
                     transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] max-w-5xl z-[60]"
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[88%] lg:w-[80%] max-w-4xl z-[60]"
                 >
-                    <div className="bg-white/90 backdrop-blur-3xl border border-white/50 shadow-2xl rounded-[2.5rem] p-3 pr-5 flex items-center justify-between gap-4 ring-1 ring-black/5">
+                    <div className="bg-white/95 backdrop-blur-3xl border border-white shadow-2xl rounded-full px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3 md:gap-4 ring-1 ring-black/5">
                         {/* Album Art & Song Info */}
-                        <div onClick={toggleFullScreen} className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer group hover:bg-white/60 rounded-[2rem] pr-4 transition-all">
+                        <div onClick={toggleFullScreen} className="flex items-center gap-3 md:gap-4 flex-1 min-w-0 cursor-pointer group">
                             <motion.div 
                                 layoutId="activeSongImage"
-                                className="w-14 h-14 md:w-16 md:h-16 rounded-[1.5rem] overflow-hidden shadow-lg relative shrink-0 border-2 border-white"
+                                className="w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden shadow-lg relative shrink-0 ring-2 ring-white"
                             >
                                 <img 
                                     src={currentSong.image} 
@@ -298,41 +298,50 @@ const Player = () => {
                                     className="w-full h-full object-cover" 
                                 />
                                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                    <Maximize2 size={20} className="text-white" />
+                                    <Maximize2 size={18} className="text-white" strokeWidth={2.5} />
                                 </div>
                             </motion.div>
-                            <div className="overflow-hidden">
-                                <h4 className="font-bold tracking-tight truncate text-base text-slate-900">{currentSong.title}</h4>
-                                <p className="text-xs text-slate-500 font-bold uppercase tracking-widest truncate">{currentSong.artist}</p>
+                            <div className="overflow-hidden flex-1">
+                                <h4 className="font-black tracking-tight truncate text-sm md:text-base text-slate-900">{currentSong.title}</h4>
+                                <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-wider truncate">{currentSong.artist}</p>
                             </div>
                         </div>
 
-                        {/* Playback Controls */}
-                        <div className="flex items-center gap-3 md:gap-6">
-                            <button onClick={prevSong} className="opacity-50 hover:opacity-100 transition-opacity hidden sm:block p-2 hover:bg-black/5 rounded-full text-slate-900">
-                                <ChevronLeft size={24} strokeWidth={3} />
+                        {/* Playback Controls - Always Visible */}
+                        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                            <button 
+                                onClick={prevSong} 
+                                className="p-2.5 md:p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all active:scale-90"
+                            >
+                                <ChevronLeft size={22} strokeWidth={3} />
                             </button>
                             <button 
                                 onClick={isPlaying ? pauseSong : resumeSong}
-                                className="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl"
+                                className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-slate-900 to-slate-700 text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-lg"
                             >
-                                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+                                {isPlaying ? <Pause size={20} fill="currentColor" strokeWidth={0} /> : <Play size={20} fill="currentColor" strokeWidth={0} className="ml-0.5" />}
                             </button>
-                            <button onClick={nextSong} className="opacity-50 hover:opacity-100 transition-opacity p-2 hover:bg-black/5 rounded-full text-slate-900">
-                                <ChevronRight size={24} strokeWidth={3} />
+                            <button 
+                                onClick={nextSong} 
+                                className="p-2.5 md:p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all active:scale-90"
+                            >
+                                <ChevronRight size={22} strokeWidth={3} />
                             </button>
                         </div>
 
-                        {/* Secondary Actions */}
-                        <div className="flex items-center justify-end gap-3 md:gap-4 shrink-0 border-l border-slate-100 pl-4">
+                        {/* Secondary Actions - Desktop Only */}
+                        <div className="hidden md:flex items-center gap-2 shrink-0">
                             <button 
                                 onClick={() => toggleFavorite(currentSong)}
-                                className={`transition-all p-2 rounded-full hover:bg-black/5 hidden sm:block ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-slate-400 hover:text-slate-900'}`}
+                                className={`p-2.5 rounded-full transition-all hover:bg-slate-100 ${favorites.some(f => f.id === currentSong.id) ? 'text-pink-500' : 'text-slate-400 hover:text-pink-500'}`}
                             >
-                                <Heart size={22} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} strokeWidth={2} />
                             </button>
-                            <button onClick={toggleFullScreen} className="p-2 opacity-50 hover:opacity-100 hover:bg-black/5 rounded-full transition-all text-slate-900">
-                                <Maximize2 size={20} />
+                            <button 
+                                onClick={toggleFullScreen} 
+                                className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all"
+                            >
+                                <Maximize2 size={18} strokeWidth={2.5} />
                             </button>
                         </div>
                     </div>
