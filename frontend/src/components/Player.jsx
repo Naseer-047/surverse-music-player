@@ -192,48 +192,51 @@ const Player = () => {
                 )}
             </AnimatePresence>
 
-            {/* Minimized Player - Classic Fixed Bottom Bar */}
+            {/* Minimized Player - Floating Pill Redesign (Larger Mobile) */}
             <motion.div 
                 initial={{ y: 200, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className={`fixed bottom-0 left-0 right-0 z-[60] ${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500`}
+                className={`fixed bottom-6 left-4 right-4 md:bottom-8 md:left-8 md:right-8 z-[60] ${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500`}
             >
-                <div 
-                    className="bg-black text-white border-t border-white/10 p-3 md:p-4 flex items-center justify-between gap-4 w-full shadow-2xl cursor-pointer"
-                    onClick={toggleFullScreen}
-                >
-                    <div className="flex items-center gap-4 flex-1 min-w-0 group">
-                        <div className="w-14 h-14 rounded-md overflow-hidden relative shrink-0">
-                            <img src={currentSong.image} className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                <div className="bg-white/80 backdrop-blur-3xl border border-white/40 shadow-2xl rounded-[2.5rem] p-3 pr-5 flex items-center justify-between gap-4 max-w-4xl mx-auto ring-1 ring-black/5">
+                    <div onClick={toggleFullScreen} className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer group hover:bg-white/50 rounded-[2rem] pr-4 transition-colors">
+                        <motion.div 
+                            layoutId="activeSongImage"
+                            className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shadow-lg relative shrink-0 border-2 border-white"
+                        >
+                            <img src={currentSong.image} className="w-full h-full object-cover animate-[spin_10s_linear_infinite]" />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                                 <Maximize2 size={20} className="text-white" />
                             </div>
-                        </div>
+                        </motion.div>
                         <div className="overflow-hidden">
-                            <h4 className="font-bold tracking-tight truncate text-base">{currentSong.title}</h4>
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest truncate">{currentSong.artist}</p>
+                            <h4 className="font-bold tracking-tight truncate text-base text-slate-900">{currentSong.title}</h4>
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest truncate">{currentSong.artist}</p>
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-6">
-                            <button onClick={prevSong} className="opacity-60 hover:opacity-100 transition-opacity hidden sm:block"><SkipBack size={24} fill="currentColor" /></button>
+                    <div className="flex flex-col items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-3 md:gap-6">
+                            <button onClick={prevSong} className="opacity-40 hover:opacity-100 transition-opacity hidden sm:block p-2 hover:bg-black/5 rounded-full"><SkipBack size={24} fill="currentColor" /></button>
                             <button 
                                 onClick={isPlaying ? pauseSong : resumeSong}
-                                className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
+                                className="w-14 h-14 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl border-2 border-transparent hover:border-white/20"
                             >
-                                {isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" className="ml-0.5" />}
+                                {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
                             </button>
-                            <button onClick={nextSong} className="opacity-60 hover:opacity-100 transition-opacity"><SkipForward size={24} fill="currentColor" /></button>
+                            <button onClick={nextSong} className="opacity-40 hover:opacity-100 transition-opacity p-2 hover:bg-black/5 rounded-full"><SkipForward size={24} fill="currentColor" /></button>
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-end gap-6 shrink-0 md:pr-4" onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center justify-end gap-3 md:gap-4 shrink-0 border-l border-black/5 pl-4">
                         <button 
                             onClick={() => toggleFavorite(currentSong)}
-                            className={`transition-colors hidden sm:block ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
+                            className={`transition-colors p-2 rounded-full hover:bg-black/5 hidden sm:block ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-gray-400 hover:text-black'}`}
                         >
-                            <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                            <Heart size={24} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                        </button>
+                        <button onClick={toggleFullScreen} className="p-2 opacity-40 hover:opacity-100 hover:bg-black/5 rounded-full transition-all">
+                            <Maximize2 size={20} />
                         </button>
                     </div>
                 </div>
