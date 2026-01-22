@@ -9,52 +9,127 @@ const LoadingScreen = () => (
     <motion.div 
         key="loading-screen"
         initial={{ opacity: 1 }}
-        exit={{ opacity: 0, scale: 1.05 }}
-        transition={{ duration: 0.8, ease: "easeInOut" }}
-        className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.6 }}
+        className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col items-center justify-center overflow-hidden"
     >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-500/10 via-black to-black" />
-        <div className="relative">
-            <motion.h1 
-                initial={{ filter: "blur(20px)", opacity: 0, letterSpacing: "0.2em" }}
-                animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "-0.05em" }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="text-4xl md:text-[10rem] font-black italic tracking-tighter text-white select-none"
-            >
-                SURVERSE
-            </motion.h1>
-            <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/20 to-transparent blur-3xl"
-                animate={{ x: ['-100%', '100%'] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            />
+        {/* Animated Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b33_1px,transparent_1px),linear-gradient(to_bottom,#1e293b33_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+        
+        {/* Circular Ripples */}
+        <div className="absolute inset-0 flex items-center justify-center">
+            {[...Array(3)].map((_, i) => (
+                <motion.div 
+                    key={i}
+                    className="absolute border-2 border-blue-500/20 rounded-full"
+                    animate={{ 
+                        scale: [0.5, 2.5],
+                        opacity: [0.6, 0]
+                    }}
+                    transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        delay: i * 1,
+                        ease: "easeOut"
+                    }}
+                    style={{ width: '400px', height: '400px' }}
+                />
+            ))}
         </div>
-        <div className="mt-12 flex flex-col items-center gap-6">
-            <div className="flex gap-2 h-8 items-center">
-                {[...Array(5)].map((_, i) => (
+
+        {/* Main Content */}
+        <div className="relative z-10 flex flex-col items-center gap-8">
+            {/* Spinning Vinyl Disc */}
+            <motion.div 
+                className="relative w-32 h-32 md:w-40 md:h-40"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            >
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-800 to-slate-950 border-4 border-slate-700 shadow-2xl">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
+                    {/* Center hole */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950 border-2 border-slate-600" />
+                    {/* Grooves */}
+                    {[...Array(6)].map((_, i) => (
+                        <div 
+                            key={i}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-700/40"
+                            style={{ width: `${30 + i * 15}%`, height: `${30 + i * 15}%` }}
+                        />
+                    ))}
+                </div>
+            </motion.div>
+
+            {/* Logo */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+            >
+                <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
+                    SURVERSE
+                </h1>
+            </motion.div>
+
+            {/* Audio Wave Bars */}
+            <div className="flex gap-1.5 h-12 items-center">
+                {[...Array(7)].map((_, i) => (
                     <motion.div 
                         key={i}
-                        animate={{ height: [4, 32, 4], opacity: [0.1, 1, 0.1] }}
-                        transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.1 }}
-                        className="w-1 md:w-1.5 bg-orange-500 rounded-full"
+                        animate={{ 
+                            scaleY: [0.3, 1, 0.3],
+                            opacity: [0.4, 1, 0.4]
+                        }}
+                        transition={{ 
+                            duration: 0.8, 
+                            repeat: Infinity, 
+                            delay: i * 0.12,
+                            ease: "easeInOut"
+                        }}
+                        className="w-1.5 md:w-2 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full origin-bottom"
+                        style={{ height: '100%' }}
                     />
                 ))}
             </div>
-            <motion.div 
-                animate={{ opacity: [0.3, 0.6, 0.3] }}
+
+            {/* Loading Text */}
+            <motion.div
+                animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-3"
             >
-                <p className="text-[8px] md:text-[10px] font-black tracking-[0.5em] text-white uppercase">Initializing Sonic Core</p>
-                <div className="w-32 h-[1px] bg-white/10 relative overflow-hidden">
+                <p className="text-xs md:text-sm font-bold tracking-[0.3em] text-slate-400 uppercase">
+                    Tuning Your Experience
+                </p>
+                {/* Progress Bar */}
+                <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden relative">
                     <motion.div 
-                        className="absolute inset-0 bg-orange-500"
-                        animate={{ left: ['-100%', '100%'] }}
+                        className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
+                        animate={{ x: ['-100%', '100%'] }}
                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                     />
                 </div>
             </motion.div>
         </div>
+
+        {/* Floating Particles */}
+        {[...Array(10)].map((_, i) => (
+            <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-blue-400/30 rounded-full"
+                animate={{
+                    y: ['100vh', '-10vh'],
+                    x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
+                    opacity: [0, 1, 0]
+                }}
+                transition={{
+                    duration: 8 + Math.random() * 4,
+                    repeat: Infinity,
+                    delay: i * 0.5
+                }}
+                style={{ left: `${Math.random() * 100}%` }}
+            />
+        ))}
     </motion.div>
 );
 
