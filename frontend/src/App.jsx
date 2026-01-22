@@ -13,6 +13,7 @@ import Downloads from './pages/Downloads';
 import PlaylistModal from './components/PlaylistModal';
 import { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const { isSidebarOpen } = usePlayerStore();
