@@ -13,6 +13,8 @@ const Home = () => {
     const [moodSongs, setMoodSongs] = useState([]);
     const [isFullChartActive, setIsFullChartActive] = useState(false);
     const [fullChartSongs, setFullChartSongs] = useState([]);
+    const [heroSong, setHeroSong] = useState(null);
+    const [heroVideoId, setHeroVideoId] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const moodReelRef = useRef(null);
@@ -93,16 +95,38 @@ const Home = () => {
             const newData = await newRes.json();
             
             // Shuffle and filter results
-            setTrending(shuffleArray(filterSongs(trendingData)).slice(0, 10));
+            const filteredTrending = shuffleArray(filterSongs(trendingData));
+            setTrending(filteredTrending.slice(0, 10));
             
             const filteredNew = filterSongs(newData);
             // Shuffle new arrivals too
             setNewArrivals(filteredNew.length > 0 ? shuffleArray(filteredNew).slice(0, 20) : []); 
+
+            // Pick a Random Hero Song from combined Top Results
+            const allInitialSongs = [...filteredTrending, ...filteredNew];
+            if (allInitialSongs.length > 0) {
+                const randomHero = allInitialSongs[Math.floor(Math.random() * allInitialSongs.length)];
+                setHeroSong(randomHero);
+                fetchHeroVideo(`${randomHero.title} ${randomHero.artist}`);
+            }
         } catch (error) {
             console.error("Failed to fetch data", error);
             setNewArrivals([]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchHeroVideo = async (query) => {
+        try {
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            const res = await fetch(`${baseUrl}/api/youtube/search?q=${query}`);
+            const data = await res.json();
+            if (data && data.length > 0) {
+                setHeroVideoId(data[0].id);
+            }
+        } catch (e) {
+            console.error("Hero video fetch failed", e);
         }
     };
 
@@ -264,47 +288,94 @@ const Home = () => {
                 ) : (
                     <>
                         {/* 1. HERO SECTION - REDESIGNED */}
-                        <section className="relative h-[50vh] md:h-[60vh] w-full mt-2 md:mt-4 overflow-hidden mx-auto max-w-[98%] rounded-[2rem] md:rounded-[3rem] shadow-2xl group">
-                            <motion.div 
-                                initial={{ scale: 1 }}
-                                animate={{ scale: 1.05 }}
-                                transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
-                                className="absolute inset-0"
-                            >
-                                <img 
-                                    src={trending.length > 0 ? trending[0].image.replace('150x150', '500x500') : "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2000"} 
-                                    className="w-full h-full object-cover object-center filter brightness-[0.7] group-hover:brightness-90 transition-all duration-700" 
-                                    alt="Hero"
-                                />
-                            </motion.div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                        <section className="relative h-[60vh] md:h-[80vh] w-full mt-2 md:mt-4 overflow-hidden mx-auto max-w-[98%] rounded-[2.5rem] md:rounded-[4rem] shadow-2xl group border border-black/5 bg-black">
+                            {/* Video Background */}
+                            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                                {heroVideoId ? (
+                                    <iframe
+                                        className="w-[100%] h-[100%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-[1.5] brightness-[0.6]"
+                                        src={`https://www.youtube.com/embed/${heroVideoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${heroVideoId}&modestbranding=1&rel=0&showinfo=0`}
+                                        title="Hero Video"
+                                        frameBorder="0"
+                                        allow="autoplay; encrypted-media"
+                                    />
+                                ) : (
+                                    <motion.div 
+                                        initial={{ scale: 1 }}
+                                        animate={{ scale: 1.05 }}
+                                        transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+                                        className="absolute inset-0"
+                                    >
+                                        <img 
+                                            src={heroSong ? heroSong.image.replace('150x150', '500x500') : "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2000"} 
+                                            className="w-full h-full object-cover object-center filter brightness-[0.5]" 
+                                            alt="Hero fallback"
+                                        />
+                                    </motion.div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+                            </div>
                             
-                            <div className="absolute bottom-0 left-0 p-6 md:p-12 text-white z-10 w-full md:w-2/3">
-                                <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8 }} className="flex flex-col items-start text-left">
-                                    <span className="inline-block px-3 py-1 mb-2 md:mb-4 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-[10px] md:text-xs font-bold tracking-widest uppercase">
-                                        {trending.length > 0 ? "Trending Now" : "Spotlight"}
-                                    </span>
-                                    <h1 className="text-3xl md:text-6xl font-black italic tracking-tighter leading-none mb-2 md:mb-6 line-clamp-2">
-                                        {trending.length > 0 ? trending[0].title : "The Weekend Vibes"}
+                            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-20 z-10">
+                                <motion.div 
+                                    initial={{ y: 50, opacity: 0 }} 
+                                    animate={{ y: 0, opacity: 1 }} 
+                                    transition={{ duration: 1, ease: "easeOut" }} 
+                                    className="max-w-4xl"
+                                >
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <span className="px-4 py-1.5 rounded-full bg-orange-500 text-white text-[10px] md:text-xs font-black tracking-[0.2em] uppercase shadow-lg shadow-orange-500/20">
+                                            {heroSong ? "Sonic Spotlight" : "Featured"}
+                                        </span>
+                                        <div className="flex gap-1">
+                                            {[1,2,3].map(i => <motion.div key={i} animate={{ height: [4, 12, 4] }} transition={{ duration: 0.5, repeat: Infinity, delay: i*0.1 }} className="w-1 bg-white/40 rounded-full" />)}
+                                        </div>
+                                    </div>
+
+                                    <h1 className="text-5xl md:text-9xl font-black italic tracking-tighter leading-[0.85] mb-6 text-white drop-shadow-2xl">
+                                        {heroSong ? heroSong.title : "Unleash The Sound"}
                                     </h1>
-                                    <p className="text-xs md:text-lg font-medium opacity-80 mb-4 md:mb-8 max-w-lg line-clamp-2">
-                                        {trending.length > 0 ? `Listen to the #1 hit by ${trending[0].artist}` : "Experience the ultimate sonic journey with our curated playlist."}
-                                    </p>
-                                    <div className="flex items-center gap-4">
-                                        <button 
-                                            onClick={() => trending.length > 0 && playSong(trending[0], 0)} 
-                                            className="bg-white text-black px-6 py-3 md:px-10 md:py-4 rounded-full font-black text-xs md:text-sm tracking-widest hover:scale-105 transition-transform flex items-center gap-2"
-                                        >
-                                            <Play size={18} fill="currentColor" /> PLAY NOW
-                                        </button>
-                                        <button 
-                                            onClick={() => trending.length > 0 && toggleFavorite(trending[0])}
-                                            className={`w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-md transition-all ${trending.length > 0 && favorites.some(f => f.id === trending[0].id) ? 'bg-red-500 border-red-500 text-white' : 'hover:bg-white/10 text-white'}`}
-                                        >
-                                            <Heart size={20} fill={trending.length > 0 && favorites.some(f => f.id === trending[0].id) ? "currentColor" : "none"} />
-                                        </button>
+                                    
+                                    <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+                                        <p className="text-sm md:text-xl font-bold text-white/70 max-w-xl leading-relaxed italic border-l-4 border-orange-500 pl-6">
+                                            {heroSong ? `Vibe with ${heroSong.artist}. Discover the sonic architecture of today's most viral hits, curated exclusively for the Surverse.` : "Your gateway to the ultimate acoustic universe. Hit play to start your journey."}
+                                        </p>
+
+                                        <div className="flex items-center gap-4">
+                                            <button 
+                                                onClick={() => heroSong && playSong(heroSong, 0)} 
+                                                className="group relative bg-white hover:bg-orange-500 text-black hover:text-white px-8 py-4 md:px-12 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-xs md:text-base tracking-[0.2em] transition-all duration-500 flex items-center gap-3 shadow-2xl hover:scale-105 active:scale-95"
+                                            >
+                                                <Play size={24} fill="currentColor" className="group-hover:rotate-12 transition-transform" /> 
+                                                LISTEN NOW
+                                            </button>
+                                            
+                                            <button 
+                                                onClick={() => heroSong && toggleFavorite(heroSong)}
+                                                className={`w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] border-2 flex items-center justify-center backdrop-blur-xl transition-all duration-500 shadow-2xl ${heroSong && favorites.some(f => f.id === heroSong.id) ? 'bg-red-500 border-red-500 text-white scale-110' : 'bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40'}`}
+                                            >
+                                                <Heart size={28} fill={heroSong && favorites.some(f => f.id === heroSong.id) ? "currentColor" : "none"} />
+                                            </button>
+
+                                            <button 
+                                                onClick={fetchData}
+                                                className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] bg-white/5 border-2 border-white/20 flex items-center justify-center backdrop-blur-xl text-white hover:bg-white/10 hover:border-white/40 transition-all duration-500"
+                                                title="Refresh Inspiration"
+                                            >
+                                                <Radio size={28} className="animate-pulse" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </motion.div>
+                            </div>
+
+                            {/* Decorative Elements */}
+                            <div className="absolute top-10 right-10 z-10 hidden md:block">
+                                <div className="flex flex-col items-end gap-2">
+                                    <div className="text-white/20 text-8xl font-black italic tracking-tighter select-none">SURVERSE</div>
+                                    <div className="w-32 h-1 bg-gradient-to-r from-transparent to-orange-500 rounded-full" />
+                                </div>
                             </div>
                         </section>
 
