@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Music2, Sparkles, User, Bell } from 'lucide-react';
+import { Search, Music2, Sparkles, User, Bell, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import usePlayerStore from '../store/playerStore';
@@ -15,7 +15,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-[60] section-padding py-6 md:py-4 bg-white/40 backdrop-blur-xl border-b border-black/5">
+        <nav className="fixed top-0 left-0 right-0 z-[60] section-padding py-3 md:py-4 bg-white/40 backdrop-blur-xl border-b border-black/5">
             <div className="flex items-center justify-between gap-4 relative">
                 <div className="flex items-center gap-3 group cursor-pointer shrink-0" onClick={toggleSidebar}>
                     <div className="w-12 h-12 md:w-10 md:h-10 bg-black text-white rounded-2xl flex items-center justify-center group-hover:rotate-[15deg] transition-transform shadow-lg">
@@ -43,7 +43,7 @@ const Navbar = () => {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
-                            className="absolute inset-x-0 top-0 h-[100px] bg-white z-[70] flex items-center px-6 gap-4 shadow-2xl md:hidden"
+                            className="absolute inset-0 bg-white z-[70] flex items-center px-6 gap-4 shadow-2xl md:hidden"
                             onSubmit={(e) => { handleSubmit(e); setIsMobileSearchOpen(false); }}
                         >
                             <Search className="w-6 h-6 text-black shrink-0" />
