@@ -182,9 +182,9 @@ const Player = () => {
                     initial={{ y: 200, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 200, opacity: 0 }}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-4xl z-[60] transition-all duration-500"
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] max-w-5xl z-[60] transition-all duration-500"
                 >
-                        <div className="bg-white/80 backdrop-blur-3xl border border-white/40 shadow-2xl rounded-[2.5rem] p-3 pr-5 flex items-center justify-between gap-4 max-w-4xl mx-auto ring-1 ring-black/5">
+                    <div className="bg-white/80 backdrop-blur-3xl border border-white/40 shadow-2xl rounded-[2.5rem] p-3 pr-5 flex items-center justify-between gap-4 ring-1 ring-black/5">
                             <div onClick={toggleFullScreen} className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer group hover:bg-white/50 rounded-[2rem] pr-4 transition-colors">
                                 <motion.div 
                                     layoutId="activeSongImage"
