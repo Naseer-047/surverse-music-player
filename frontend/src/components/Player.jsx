@@ -69,91 +69,165 @@ const Player = () => {
                         initial={{ y: '100%' }}
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
-                        transition={{ duration: 0.5, ease: "circOut" }}
-                        className="fixed inset-0 z-[100] bg-black/90 flex flex-col overflow-hidden text-white"
+                        transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+                        className="fixed inset-0 z-[100] bg-white flex flex-col overflow-hidden text-slate-900"
                     >
-                        {/* Dynamic Background Blur */}
-                        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                             <img 
-                                src={currentSong.image?.replace('150x150', '500x500')} 
-                                className="w-full h-full object-cover opacity-60 scale-150 animate-[spin_60s_linear_infinite]" 
-                                style={{ filter: 'blur(100px)' }}
-                             />
-                             <div className="absolute inset-0 bg-black/40 backdrop-blur-[100px]" />
-                        </div>
+                        {/* ----------------MOBILE LAYOUT (Fluid Minimalist)---------------- */}
+                        <div className="md:hidden flex flex-col h-full relative">
+                            {/* Header */}
+                            <div className="flex justify-between items-center p-6 z-20">
+                                <button onClick={toggleFullScreen} className="p-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-900 transition-colors">
+                                    <ChevronDown size={24} />
+                                </button>
+                                <span className="font-black uppercase tracking-[0.2em] text-slate-300 text-xs">Now Playing</span>
+                                <button onClick={() => openPlaylistModal(currentSong)} className="p-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-900 transition-colors">
+                                    <Plus size={24} />
+                                </button>
+                            </div>
 
-                        {/* Full Screen Header */}
-                        <div className="flex justify-between items-center p-6 z-20 shrink-0">
-                            <button onClick={toggleFullScreen} className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md">
-                                <ChevronDown size={24} />
-                            </button>
-                            <span className="font-black uppercase tracking-[0.3em] opacity-60 text-xs drop-shadow-md">Now Playing</span>
-                            <button className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-md opacity-0">
-                                <ListMusic size={20} />
-                            </button>
-                        </div>
-
-                        {/* Center Content: GLASS CARD */}
-                        <div className="flex-1 overflow-y-auto no-scrollbar relative z-10 flex items-center justify-center p-6">
-                            <div className="w-full max-w-sm bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[3rem] p-6 pb-10 shadow-2xl relative overflow-hidden">
-                                {/* Glossy Reflection */}
-                                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-                                
-                                {/* Artwork */}
-                                <div className="aspect-square rounded-[2rem] overflow-hidden shadow-2xl mb-8 relative border border-white/10">
+                            {/* Content */}
+                            <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-12">
+                                {/* Giant Artwork with Natural Shadow */}
+                                <motion.div 
+                                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="w-full aspect-square rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] bg-white"
+                                >
                                     <img src={currentSong.image?.replace('150x150', '500x500')} className="w-full h-full object-cover" />
-                                </div>
+                                </motion.div>
 
-                                {/* Info */}
-                                <div className="text-center mb-8">
-                                    <h2 className="text-3xl font-black italic tracking-tighter leading-none mb-2 drop-shadow-md">{currentSong.title}</h2>
-                                    <p className="text-sm font-bold opacity-60 uppercase tracking-widest">{currentSong.artist}</p>
-                                </div>
-
-                                {/* Progress */}
-                                <div className="mb-8 px-2 group">
-                                     <input 
-                                        type="range" 
-                                        min="0" max={duration || 100} 
-                                        value={currentTime}
-                                        onChange={handleSeek}
-                                        className="w-full h-1.5 bg-white/20 rounded-full appearance-none accent-white cursor-pointer hover:h-2 transition-all mb-2"
-                                    />
-                                    <div className="flex justify-between text-[10px] font-bold opacity-40 font-mono tracking-wider">
-                                        <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
-                                        <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
-                                    </div>
-                                </div>
-
-                                {/* Controls */}
-                                <div className="flex justify-between items-center px-4">
-                                     <button 
-                                        onClick={() => toggleFavorite(currentSong)}
-                                        className={`p-3 rounded-full transition-all active:scale-95 ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500 bg-white/10' : 'text-white/40 hover:text-white hover:bg-white/10'}`}
-                                    >
-                                        <Heart size={24} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
-                                    </button>
-
-                                    <div className="flex items-center gap-6">
-                                        <button onClick={prevSong} className="p-2 opacity-80 hover:opacity-100 active:scale-90 transition-transform"><SkipBack size={28} fill="currentColor" /></button>
-                                        <button 
-                                            onClick={isPlaying ? pauseSong : resumeSong}
-                                            className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl"
+                                {/* Meta & Controls */}
+                                <div className="w-full space-y-8">
+                                    <div className="flex justify-between items-end">
+                                        <div className="space-y-1 max-w-[80%]">
+                                            <h2 className="text-3xl font-black italic tracking-tighter leading-none text-slate-900 line-clamp-2">{currentSong.title}</h2>
+                                            <p className="text-lg font-bold text-slate-400 uppercase tracking-widest truncate">{currentSong.artist}</p>
+                                        </div>
+                                         <button 
+                                            onClick={() => toggleFavorite(currentSong)}
+                                            className="p-3 rounded-full bg-slate-50 text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all active:scale-90 shadow-sm"
                                         >
-                                            {isPlaying ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" className="ml-1" />}
+                                            <Heart size={28} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} className={favorites.some(f => f.id === currentSong.id) ? "text-red-500" : ""} />
                                         </button>
-                                        <button onClick={nextSong} className="p-2 opacity-80 hover:opacity-100 active:scale-90 transition-transform"><SkipForward size={28} fill="currentColor" /></button>
                                     </div>
 
-                                    <button 
-                                        onClick={() => openPlaylistModal(currentSong)}
-                                        className="p-3 rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-95"
-                                    >
-                                        <Plus size={24} />
-                                    </button>
+                                    {/* Fluid Progress */}
+                                    <div className="space-y-2 group">
+                                         <input 
+                                            type="range" 
+                                            min="0" max={duration || 100} 
+                                            value={currentTime}
+                                            onChange={handleSeek}
+                                            className="w-full h-3 bg-slate-100 rounded-full appearance-none accent-slate-900 cursor-pointer transition-all"
+                                        />
+                                        <div className="flex justify-between text-xs font-bold text-slate-300 font-mono tracking-wider px-1">
+                                            <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
+                                            <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Big Air Controls */}
+                                    <div className="flex justify-between items-center pt-2">
+                                        <button className="opacity-30 hover:opacity-100 transition-opacity p-2"><Shuffle size={24} /></button>
+                                        <div className="flex items-center gap-8">
+                                            <button onClick={prevSong} className="p-4 hover:bg-slate-50 rounded-full transition-colors active:scale-95"><SkipBack size={32} fill="currentColor" /></button>
+                                            <button 
+                                                onClick={isPlaying ? pauseSong : resumeSong}
+                                                className="w-20 h-20 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-200"
+                                            >
+                                                {isPlaying ? <Pause size={32} fill="currentColor" /> : <Play size={32} fill="currentColor" className="ml-1" />}
+                                            </button>
+                                            <button onClick={nextSong} className="p-4 hover:bg-slate-50 rounded-full transition-colors active:scale-95"><SkipForward size={32} fill="currentColor" /></button>
+                                        </div>
+                                        <button className="opacity-30 hover:opacity-100 transition-opacity p-2"><Repeat size={24} /></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        {/* ----------------DESKTOP LAYOUT (Pro Studio Split)---------------- */}
+                        <div className="hidden md:flex h-full w-full">
+                            {/* Left: Artwork Section */}
+                            <div className="w-[45%] h-full bg-slate-50 p-12 flex flex-col justify-center items-center relative overflow-hidden">
+                                <div className="absolute inset-0 opacity-30 blur-[120px] scale-150 pointer-events-none" style={{ backgroundImage: `url(${currentSong.image})`, backgroundSize: 'cover' }}></div>
+                                <motion.div 
+                                    layoutId="desktopArt"
+                                    className="w-full max-w-xl aspect-square rounded-[3rem] overflow-hidden shadow-2xl z-10 bg-white"
+                                >
+                                     <img src={currentSong.image?.replace('150x150', '500x500')} className="w-full h-full object-cover" />
+                                </motion.div>
+                                <button onClick={toggleFullScreen} className="absolute top-8 left-8 p-4 bg-white/50 backdrop-blur-xl rounded-full hover:bg-white transition-all shadow-sm z-20">
+                                    <ChevronDown size={24} />
+                                </button>
+                            </div>
+
+                            {/* Right: Controls Section */}
+                            <div className="w-[55%] h-full bg-white flex flex-col justify-center px-24 py-12 relative">
+                                <div className="absolute top-12 right-12 flex gap-4">
+                                    <button onClick={() => toggleFavorite(currentSong)} className={`p-4 rounded-full border border-slate-100 hover:border-red-200 transition-all active:scale-95 ${favorites.some(f => f.id === currentSong.id) ? 'bg-red-50 text-red-500' : 'hover:bg-slate-50 text-slate-400'}`}>
+                                        <Heart size={24} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
+                                    </button>
+                                    <button onClick={() => openPlaylistModal(currentSong)} className="p-4 rounded-full border border-slate-100 hover:bg-slate-50 text-slate-400 hover:text-slate-900 transition-all active:scale-95">
+                                        <Plus size={24} />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-16 max-w-2xl">
+                                    <div className="space-y-4">
+                                        <h2 className="text-7xl font-black italic tracking-tighter text-slate-900 leading-[0.9]">{currentSong.title}</h2>
+                                        <p className="text-3xl font-bold text-slate-300 uppercase tracking-widest">{currentSong.artist}</p>
+                                    </div>
+
+                                    {/* Minimal Waveform / Progress */}
+                                    <div className="space-y-4 group">
+                                         <input 
+                                            type="range" 
+                                            min="0" max={duration || 100} 
+                                            value={currentTime}
+                                            onChange={handleSeek}
+                                            className="w-full h-4 bg-slate-100 rounded-full appearance-none accent-slate-900 cursor-pointer hover:h-5 transition-all"
+                                        />
+                                        <div className="flex justify-between text-sm font-bold text-slate-400 font-mono tracking-wider">
+                                            <span>{Math.floor(currentTime/60)}:{('0'+Math.floor(currentTime%60)).slice(-2)}</span>
+                                            <span>{Math.floor(duration/60)}:{('0'+Math.floor(duration%60)).slice(-2)}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Studio Controls */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex gap-2">
+                                            <button className="p-4 text-slate-300 hover:text-slate-900 transition-colors"><Shuffle size={28} /></button>
+                                            <button className="p-4 text-slate-300 hover:text-slate-900 transition-colors"><Repeat size={28} /></button>
+                                        </div>
+
+                                        <div className="flex items-center gap-10">
+                                            <button onClick={prevSong} className="p-6 text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-95"><SkipBack size={48} strokeWidth={1} fill="currentColor" /></button>
+                                            <button 
+                                                onClick={isPlaying ? pauseSong : resumeSong}
+                                                className="w-32 h-32 bg-slate-900 text-white rounded-[3rem] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-slate-300"
+                                            >
+                                                {isPlaying ? <Pause size={48} fill="currentColor" /> : <Play size={48} fill="currentColor" className="ml-2" />}
+                                            </button>
+                                            <button onClick={nextSong} className="p-6 text-slate-900 hover:bg-slate-50 rounded-full transition-all active:scale-95"><SkipForward size={48} strokeWidth={1} fill="currentColor" /></button>
+                                        </div>
+
+                                        {/* Volume */}
+                                        <div className="flex items-center gap-4 group">
+                                            <Volume2 size={24} className="text-slate-300" />
+                                            <input 
+                                                type="range"
+                                                min="0" max="1" step="0.01"
+                                                value={volume}
+                                                onChange={(e) => setVolume(e.target.value)}
+                                                className="w-24 h-2 bg-slate-100 rounded-full appearance-none accent-slate-900 cursor-pointer group-hover:w-32 transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </motion.div>
                 )}
             </AnimatePresence>
