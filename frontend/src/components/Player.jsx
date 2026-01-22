@@ -131,7 +131,7 @@ const Player = () => {
                                 {/* Main Controls - Modern Filled Icons */}
                                 <div className="flex items-center justify-center gap-6 py-4">
                                     <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                        <ChevronLeft size={40} strokeWidth={3} />
+                                        <ChevronsLeft size={40} strokeWidth={2.5} fill="currentColor" className="opacity-60" />
                                     </button>
                                     
                                     <button 
@@ -142,7 +142,7 @@ const Player = () => {
                                     </button>
 
                                     <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                        <ChevronRight size={40} strokeWidth={3} />
+                                        <ChevronsRight size={40} strokeWidth={2.5} fill="currentColor" className="opacity-60" />
                                     </button>
                                 </div>
 
@@ -227,7 +227,7 @@ const Player = () => {
                                         {/* Main Controls */}
                                         <div className="flex items-center gap-6 py-6">
                                             <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                                <ChevronLeft size={44} strokeWidth={3} />
+                                                <ChevronsLeft size={44} strokeWidth={2.5} fill="currentColor" className="opacity-60" />
                                             </button>
                                             
                                             <button 
@@ -238,7 +238,7 @@ const Player = () => {
                                             </button>
 
                                             <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                                <ChevronRight size={44} strokeWidth={3} />
+                                                <ChevronsRight size={44} strokeWidth={2.5} fill="currentColor" className="opacity-60" />
                                             </button>
                                         </div>
 
