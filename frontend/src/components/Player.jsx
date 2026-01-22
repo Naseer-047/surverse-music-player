@@ -276,14 +276,14 @@ const Player = () => {
                 )}
             </AnimatePresence>
 
-            {/* MINIMIZED PILL PLAYER - ABSOLUTE CENTER OF PAGE */}
+            {/* MINIMIZED PILL PLAYER - Bottom Center (X-axis only) */}
             {!isFullScreen && (
                 <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[94%] md:w-[70%] lg:w-[60%] max-w-3xl z-[60]"
+                    initial={{ y: 200, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: 200, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[88%] lg:w-[80%] max-w-4xl z-[60]"
                 >
                     <div className="bg-white/98 backdrop-blur-3xl border-2 border-slate-200 shadow-2xl rounded-full px-5 py-4 md:px-8 md:py-5 flex items-center justify-between gap-4 md:gap-6">
                         {/* Album Art & Song Info */}
