@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import usePlayerStore from '../store/playerStore';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus } from 'lucide-react';
+import { Play, Pause, ChevronRight, ChevronLeft, Volume2, Maximize2, Minimize2, ChevronDown, ListMusic, Shuffle, Repeat, Plus, Heart, HeartHandshake, ListPlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Player = () => {
@@ -131,7 +131,7 @@ const Player = () => {
                                 {/* Main Controls - Modern Filled Icons */}
                                 <div className="flex items-center justify-center gap-6 py-4">
                                     <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                        <SkipBack size={36} fill="currentColor" strokeWidth={0} />
+                                        <ChevronLeft size={40} strokeWidth={3} />
                                     </button>
                                     
                                     <button 
@@ -142,7 +142,7 @@ const Player = () => {
                                     </button>
 
                                     <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                        <SkipForward size={36} fill="currentColor" strokeWidth={0} />
+                                        <ChevronRight size={40} strokeWidth={3} />
                                     </button>
                                 </div>
 
@@ -227,7 +227,7 @@ const Player = () => {
                                         {/* Main Controls */}
                                         <div className="flex items-center gap-6 py-6">
                                             <button onClick={prevSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                                <SkipBack size={40} fill="currentColor" strokeWidth={0} />
+                                                <ChevronLeft size={44} strokeWidth={3} />
                                             </button>
                                             
                                             <button 
@@ -238,7 +238,7 @@ const Player = () => {
                                             </button>
 
                                             <button onClick={nextSong} className="text-slate-400 hover:text-slate-900 transition-all active:scale-90 p-3">
-                                                <SkipForward size={40} fill="currentColor" strokeWidth={0} />
+                                                <ChevronRight size={44} strokeWidth={3} />
                                             </button>
                                         </div>
 
@@ -276,60 +276,6 @@ const Player = () => {
                 )}
             </AnimatePresence>
 
-            {/* MINIMIZED PLAYER - ALWAYS AT BOTTOM (Outside AnimatePresence) */}
-            {!isFullScreen && (
-                <motion.div 
-                    initial={{ y: 200, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 200, opacity: 0 }}
-                    className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] max-w-5xl z-[60] transition-all duration-500"
-                >
-                    <div className="bg-white/80 backdrop-blur-3xl border border-white/40 shadow-2xl rounded-[2.5rem] p-3 pr-5 flex items-center justify-between gap-4 ring-1 ring-black/5">
-                            <div onClick={toggleFullScreen} className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer group hover:bg-white/50 rounded-[2rem] pr-4 transition-colors">
-                                <motion.div 
-                                    layoutId="activeSongImage"
-                                    className="w-14 h-14 md:w-16 md:h-16 rounded-[1.5rem] overflow-hidden shadow-lg relative shrink-0 border-2 border-white"
-                                >
-                                    <img src={currentSong.image} className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <Maximize2 size={20} className="text-white" />
-                                    </div>
-                                </motion.div>
-                                <div className="overflow-hidden">
-                                    <h4 className="font-bold tracking-tight truncate text-base text-slate-900">{currentSong.title}</h4>
-                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-widest truncate">{currentSong.artist}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 md:gap-6">
-                                <button onClick={prevSong} className="opacity-40 hover:opacity-100 transition-opacity hidden sm:block p-2 hover:bg-black/5 rounded-full text-slate-900">
-                                    <SkipBack size={24} fill="currentColor" strokeWidth={0} />
-                                </button>
-                                <button 
-                                    onClick={isPlaying ? pauseSong : resumeSong}
-                                    className="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl hover:shadow-2xl border-2 border-transparent hover:border-white/20"
-                                >
-                                    {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
-                                </button>
-                                <button onClick={nextSong} className="opacity-40 hover:opacity-100 transition-opacity p-2 hover:bg-black/5 rounded-full text-slate-900">
-                                    <SkipForward size={24} fill="currentColor" strokeWidth={0} />
-                                </button>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 md:gap-4 shrink-0 border-l border-slate-100 pl-4">
-                                <button 
-                                    onClick={() => toggleFavorite(currentSong)}
-                                    className={`transition-colors p-2 rounded-full hover:bg-black/5 hidden sm:block ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-slate-300 hover:text-slate-900'}`}
-                                >
-                                    <Heart size={24} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
-                                </button>
-                                <button onClick={toggleFullScreen} className="p-2 opacity-40 hover:opacity-100 hover:bg-black/5 rounded-full transition-all text-slate-900">
-                                    <Maximize2 size={20} />
-                                </button>
-                            </div>
-                        </div>
-                    </motion.div>
-            )}
         </>
     );
 };
