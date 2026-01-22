@@ -10,124 +10,157 @@ const LoadingScreen = () => (
         key="loading-screen"
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.6 }}
-        className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col items-center justify-center overflow-hidden"
+        transition={{ duration: 0.5 }}
+        className="fixed inset-0 z-[100] bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 flex items-center justify-center overflow-hidden"
     >
-        {/* Animated Grid Background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b33_1px,transparent_1px),linear-gradient(to_bottom,#1e293b33_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-        
-        {/* Circular Ripples */}
-        <div className="absolute inset-0 flex items-center justify-center">
-            {[...Array(3)].map((_, i) => (
-                <motion.div 
-                    key={i}
-                    className="absolute border-2 border-blue-500/20 rounded-full"
-                    animate={{ 
-                        scale: [0.5, 2.5],
-                        opacity: [0.6, 0]
-                    }}
-                    transition={{ 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        delay: i * 1,
-                        ease: "easeOut"
-                    }}
-                    style={{ width: '400px', height: '400px' }}
-                />
-            ))}
-        </div>
+        {/* Animated Gradient Overlay */}
+        <motion.div 
+            className="absolute inset-0 opacity-30"
+            animate={{
+                background: [
+                    'radial-gradient(circle at 20% 50%, rgba(99,102,241,0.3) 0%, transparent 50%)',
+                    'radial-gradient(circle at 80% 50%, rgba(168,85,247,0.3) 0%, transparent 50%)',
+                    'radial-gradient(circle at 50% 80%, rgba(59,130,246,0.3) 0%, transparent 50%)',
+                    'radial-gradient(circle at 20% 50%, rgba(99,102,241,0.3) 0%, transparent 50%)'
+                ]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
 
-        {/* Main Content */}
-        <div className="relative z-10 flex flex-col items-center gap-8">
-            {/* Spinning Vinyl Disc */}
-            <motion.div 
-                className="relative w-32 h-32 md:w-40 md:h-40"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-            >
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-slate-800 to-slate-950 border-4 border-slate-700 shadow-2xl">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10" />
-                    {/* Center hole */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950 border-2 border-slate-600" />
-                    {/* Grooves */}
-                    {[...Array(6)].map((_, i) => (
-                        <div 
-                            key={i}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-700/40"
-                            style={{ width: `${30 + i * 15}%`, height: `${30 + i * 15}%` }}
-                        />
-                    ))}
-                </div>
-            </motion.div>
-
-            {/* Logo */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-            >
-                <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
-                    SURVERSE
-                </h1>
-            </motion.div>
-
-            {/* Audio Wave Bars */}
-            <div className="flex gap-1.5 h-12 items-center">
-                {[...Array(7)].map((_, i) => (
-                    <motion.div 
+        {/* Main Content Container */}
+        <div className="relative flex flex-col items-center gap-12 z-10">
+            
+            {/* Pulsing Energy Orb */}
+            <div className="relative">
+                {/* Outer Glow Rings */}
+                {[...Array(3)].map((_, i) => (
+                    <motion.div
                         key={i}
-                        animate={{ 
-                            scaleY: [0.3, 1, 0.3],
-                            opacity: [0.4, 1, 0.4]
+                        className="absolute inset-0 rounded-full border-2"
+                        style={{
+                            borderColor: `rgba(139, 92, 246, ${0.3 - i * 0.1})`,
+                            width: `${120 + i * 40}px`,
+                            height: `${120 + i * 40}px`,
+                            left: `${-20 - i * 20}px`,
+                            top: `${-20 - i * 20}px`
                         }}
-                        transition={{ 
-                            duration: 0.8, 
-                            repeat: Infinity, 
-                            delay: i * 0.12,
-                            ease: "easeInOut"
+                        animate={{
+                            scale: [1, 1.2, 1],
+                            opacity: [0.5, 0.2, 0.5]
                         }}
-                        className="w-1.5 md:w-2 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full origin-bottom"
-                        style={{ height: '100%' }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: i * 0.4
+                        }}
                     />
                 ))}
+
+                {/* Main Orb */}
+                <motion.div
+                    className="relative w-28 h-28 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_60px_rgba(168,85,247,0.8)]"
+                    animate={{
+                        scale: [1, 1.1, 1],
+                        boxShadow: [
+                            '0 0 60px rgba(168,85,247,0.8)',
+                            '0 0 80px rgba(99,102,241,0.9)',
+                            '0 0 60px rgba(168,85,247,0.8)'
+                        ]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                >
+                    {/* Inner Shine */}
+                    <motion.div 
+                        className="absolute inset-4 rounded-full bg-gradient-to-br from-white/40 to-transparent"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                    />
+                </motion.div>
             </div>
 
-            {/* Loading Text */}
+            {/* 3D Rotating Text */}
+            <div className="relative h-24 flex items-center justify-center perspective-1000">
+                <motion.div
+                    className="text-center"
+                    animate={{ 
+                        rotateX: [0, 10, 0, -10, 0],
+                        rotateY: [0, 5, 0, -5, 0]
+                    }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    style={{ transformStyle: 'preserve-3d' }}
+                >
+                    <h1 className="text-6xl md:text-8xl font-black bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent tracking-tighter">
+                        SURVERSE
+                    </h1>
+                    <motion.p
+                        className="text-indigo-300 text-sm md:text-base font-medium tracking-[0.3em] mt-2"
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    >
+                        MUSIC EXPERIENCE
+                    </motion.p>
+                </motion.div>
+            </div>
+
+            {/* Morphing Progress Bar */}
+            <div className="w-64 md:w-80 relative h-2 rounded-full bg-slate-800/50 overflow-hidden backdrop-blur-sm">
+                {/* Gradient Moving Fill */}
+                <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                        background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.8), rgba(168,85,247,0.8), rgba(236,72,153,0.8), transparent)'
+                    }}
+                    animate={{
+                        x: ['-200%', '200%']
+                    }}
+                    transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                />
+                {/* Shimmer Effect */}
+                <motion.div
+                    className="absolute top-0 left-0 w-full h-full"
+                    style={{
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)'
+                    }}
+                    animate={{
+                        x: ['-100%', '200%']
+                    }}
+                    transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                    }}
+                />
+            </div>
+
+            {/* Status Text */}
             <motion.div
-                animate={{ opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="flex flex-col items-center gap-3"
+                className="flex items-center gap-2 text-indigo-200/70 text-xs md:text-sm font-semibold tracking-wider"
+                animate={{ opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
             >
-                <p className="text-xs md:text-sm font-bold tracking-[0.3em] text-slate-400 uppercase">
-                    Tuning Your Experience
-                </p>
-                {/* Progress Bar */}
-                <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden relative">
-                    <motion.div 
-                        className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
-                        animate={{ x: ['-100%', '100%'] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                </div>
+                <motion.span
+                    className="w-2 h-2 rounded-full bg-purple-400"
+                    animate={{ scale: [1, 1.5, 1] }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                />
+                LOADING YOUR EXPERIENCE
             </motion.div>
         </div>
 
-        {/* Floating Particles */}
-        {[...Array(10)].map((_, i) => (
+        {/* Corner Accent Lines */}
+        {['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((position) => (
             <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-blue-400/30 rounded-full"
-                animate={{
-                    y: ['100vh', '-10vh'],
-                    x: [Math.random() * window.innerWidth, Math.random() * window.innerWidth],
-                    opacity: [0, 1, 0]
-                }}
-                transition={{
-                    duration: 8 + Math.random() * 4,
-                    repeat: Infinity,
-                    delay: i * 0.5
-                }}
-                style={{ left: `${Math.random() * 100}%` }}
+                key={position}
+                className={`absolute w-20 h-20 ${position === 'top-left' ? 'top-8 left-8 border-t-2 border-l-2' :
+                    position === 'top-right' ? 'top-8 right-8 border-t-2 border-r-2' :
+                    position === 'bottom-left' ? 'bottom-8 left-8 border-b-2 border-l-2' :
+                    'bottom-8 right-8 border-b-2 border-r-2'} border-indigo-500/30 rounded-lg`}
+                animate={{ opacity: [0.3, 0.6, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity, delay: position === 'top-right' || position === 'bottom-left' ? 1 : 0 }}
             />
         ))}
     </motion.div>
