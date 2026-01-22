@@ -19,7 +19,7 @@ const LoadingScreen = () => (
                 initial={{ filter: "blur(20px)", opacity: 0, letterSpacing: "0.2em" }}
                 animate={{ filter: "blur(0px)", opacity: 1, letterSpacing: "-0.05em" }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                className="text-6xl md:text-[10rem] font-black italic tracking-tighter text-white select-none"
+                className="text-4xl md:text-[10rem] font-black italic tracking-tighter text-white select-none"
             >
                 SURVERSE
             </motion.h1>
@@ -324,7 +324,7 @@ const Home = () => {
                                 <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter mb-2">
                                     {activeMood ? (activeMood.includes('Mix') ? activeMood : `${activeMood} Vibes`) : isFullChartActive ? 'Top Charts' : 'Search Results'}
                                 </h2>
-                                <p className="text-xs md:text-sm font-bold uppercase tracking-widest opacity-40">
+                                <p className="text-[10px] md:text-sm font-bold uppercase tracking-widest opacity-40">
                                     {activeMood ? 'Curated for your mood' : isFullChartActive ? 'Global top 50' : `Found ${searchResults.length} matches`}
                                 </p>
                            </div>
@@ -451,7 +451,7 @@ const Home = () => {
                                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
                             </div>
                             
-                            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-20 z-10">
+                            <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-20 z-10">
                                 <motion.div 
                                     initial={{ y: 50, opacity: 0 }} 
                                     animate={{ y: 0, opacity: 1 }} 
@@ -467,16 +467,16 @@ const Home = () => {
                                         </div>
                                     </div>
 
-                                    <h1 className="text-5xl md:text-9xl font-black italic tracking-tighter leading-[0.85] mb-6 text-white drop-shadow-2xl">
+                                    <h1 className="text-4xl md:text-9xl font-black italic tracking-tighter leading-[0.9] mb-4 md:mb-6 text-white drop-shadow-2xl line-clamp-2 md:line-clamp-none">
                                         {heroSong ? heroSong.title : "Unleash The Sound"}
                                     </h1>
                                     
-                                    <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
-                                        <p className="text-sm md:text-xl font-bold text-white/70 max-w-xl leading-relaxed italic border-l-4 border-orange-500 pl-6">
+                                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                                        <p className="text-xs md:text-xl font-bold text-white/70 max-w-xl leading-relaxed italic border-l-4 border-orange-500 pl-4 md:pl-6 line-clamp-2 md:line-clamp-none">
                                             {heroSong ? `Vibe with ${heroSong.artist}. Discover the sonic architecture of today's most viral hits, curated exclusively for the Surverse.` : "Your gateway to the ultimate acoustic universe. Hit play to start your journey."}
                                         </p>
 
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3 md:gap-4">
                                             <button 
                                                 onClick={() => {
                                                     if (heroSong) {
@@ -487,25 +487,25 @@ const Home = () => {
                                                         playSong(heroSong, idx !== -1 ? idx : 0);
                                                     }
                                                 }} 
-                                                className="group relative bg-white hover:bg-orange-500 text-black hover:text-white px-8 py-4 md:px-12 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-xs md:text-base tracking-[0.2em] transition-all duration-500 flex items-center gap-3 shadow-2xl hover:scale-105 active:scale-95"
+                                                className="group relative bg-white hover:bg-orange-500 text-black hover:text-white px-6 py-3 md:px-12 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-[10px] md:text-base tracking-[0.2em] transition-all duration-500 flex items-center gap-2 md:gap-3 shadow-2xl hover:scale-105 active:scale-95 shrink-0"
                                             >
-                                                <Play size={24} fill="currentColor" className="group-hover:rotate-12 transition-transform" /> 
+                                                <Play size={18} className="md:w-6 md:h-6 group-hover:rotate-12 transition-transform" fill="currentColor" /> 
                                                 LISTEN NOW
                                             </button>
                                             
                                             <button 
                                                 onClick={() => heroSong && toggleFavorite(heroSong)}
-                                                className={`w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] border-2 flex items-center justify-center backdrop-blur-xl transition-all duration-500 shadow-2xl ${heroSong && favorites.some(f => f.id === heroSong.id) ? 'bg-red-500 border-red-500 text-white scale-110' : 'bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40'}`}
+                                                className={`w-12 h-12 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] border-2 flex items-center justify-center backdrop-blur-xl transition-all duration-500 shadow-2xl shrink-0 ${heroSong && favorites.some(f => f.id === heroSong.id) ? 'bg-red-500 border-red-500 text-white scale-110' : 'bg-white/5 border-white/20 text-white hover:bg-white/10 hover:border-white/40'}`}
                                             >
-                                                <Heart size={28} fill={heroSong && favorites.some(f => f.id === heroSong.id) ? "currentColor" : "none"} />
+                                                <Heart size={20} className="md:w-7 md:h-7" fill={heroSong && favorites.some(f => f.id === heroSong.id) ? "currentColor" : "none"} />
                                             </button>
 
                                             <button 
                                                 onClick={fetchData}
-                                                className="w-14 h-14 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] bg-white/5 border-2 border-white/20 flex items-center justify-center backdrop-blur-xl text-white hover:bg-white/10 hover:border-white/40 transition-all duration-500"
+                                                className="w-12 h-12 md:w-20 md:h-20 rounded-2xl md:rounded-[2rem] bg-white/5 border-2 border-white/20 flex items-center justify-center backdrop-blur-xl text-white hover:bg-white/10 hover:border-white/40 transition-all duration-500 shrink-0"
                                                 title="Refresh Inspiration"
                                             >
-                                                <Radio size={28} className="animate-pulse" />
+                                                <Radio size={20} className="md:w-7 md:h-7 animate-pulse" />
                                             </button>
                                         </div>
                                     </div>

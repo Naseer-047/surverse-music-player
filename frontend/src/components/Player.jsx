@@ -196,24 +196,24 @@ const Player = () => {
             <motion.div 
                 initial={{ y: 100 }}
                 animate={{ y: 0 }}
-                className={`fixed bottom-0 left-0 right-0 z-[60] ${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 section-padding py-3 bg-white/80 backdrop-blur-2xl border-t border-black/5 flex items-center justify-between`}
+                className={`fixed bottom-0 left-0 right-0 z-[60] ${isSidebarOpen ? 'lg:pl-64' : ''} transition-all duration-500 section-padding py-3 bg-white/80 backdrop-blur-2xl border-t border-black/5 flex items-center justify-between gap-2 md:gap-4`}
             >
-                <div onClick={toggleFullScreen} className="flex items-center gap-4 w-1/3 cursor-pointer group hover:opacity-80 transition-opacity">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden shadow-lg relative shrink-0">
+                <div onClick={toggleFullScreen} className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer group hover:opacity-80 transition-opacity">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden shadow-lg relative shrink-0">
                         <img src={currentSong.image} className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                             <Maximize2 size={14} className="text-white" />
                         </div>
                     </div>
-                    <div className="overflow-hidden hidden sm:block">
-                        <h4 className="font-bold tracking-tight truncate text-sm">{currentSong.title}</h4>
+                    <div className="overflow-hidden">
+                        <h4 className="font-bold tracking-tight truncate text-xs md:text-sm">{currentSong.title}</h4>
                         <p className="text-[10px] opacity-40 font-bold uppercase truncate">{currentSong.artist}</p>
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-2 w-1/3">
-                    <div className="flex items-center gap-4 md:gap-6">
-                        <button onClick={prevSong} className="opacity-40 hover:opacity-100 transition-opacity"><SkipBack size={18} /></button>
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-3 md:gap-6">
+                        <button onClick={prevSong} className="opacity-40 hover:opacity-100 transition-opacity hidden sm:block"><SkipBack size={18} /></button>
                         <button 
                             onClick={isPlaying ? pauseSong : resumeSong}
                             className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-lg"
@@ -224,14 +224,14 @@ const Player = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-3 md:gap-6 w-1/3">
+                <div className="flex items-center justify-end gap-3 md:gap-6 shrink-0">
                     <button 
                         onClick={() => toggleFavorite(currentSong)}
-                        className={`transition-colors ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-gray-400 hover:text-black'}`}
+                        className={`transition-colors hidden sm:block ${favorites.some(f => f.id === currentSong.id) ? 'text-red-500' : 'text-gray-400 hover:text-black'}`}
                     >
                         <Heart size={20} fill={favorites.some(f => f.id === currentSong.id) ? "currentColor" : "none"} />
                     </button>
-                    <div className="flex items-center gap-3 group hidden sm:flex">
+                    <div className="flex items-center gap-3 group hidden md:flex">
                         <Volume2 size={16} className="opacity-40 group-hover:opacity-100" />
                         <input 
                             type="range"
