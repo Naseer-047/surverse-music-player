@@ -21,7 +21,21 @@ const NavItem = ({ to, icon: Icon, label }) => (
 );
 
 const Sidebar = () => {
-  const { isSidebarOpen, toggleSidebar } = usePlayerStore();
+  const { isSidebarOpen, toggleSidebar, deferredPrompt, setDeferredPrompt } = usePlayerStore();
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    
+    // Show the install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to the install prompt: ${outcome}`);
+    
+    // We've used the prompt, and can't use it again, so clear it
+    setDeferredPrompt(null);
+  };
 
   return (
     <AnimatePresence>
@@ -48,9 +62,9 @@ const Sidebar = () => {
                 <X size={20} />
             </button>
           </div>
-
+ 
           {/* Navigation */}
-          <nav className="flex-1 space-y-4">
+          <nav className="flex-1 space-y-4 overflow-y-auto no-scrollbar">
             <p className="text-[10px] font-black opacity-20 uppercase tracking-[0.2em] mb-8 ml-4">Main Base</p>
             <NavItem to="/" icon={Home} label="Home Base" />
             <NavItem to="/explore" icon={Sparkles} label="Discovery" />
@@ -62,8 +76,21 @@ const Sidebar = () => {
                 <NavItem to="/playlists" icon={Library} label="Your Vault" />
                 <NavItem to="/downloads" icon={Download} label="Offline Store" />
             </div>
-          </nav>
 
+            {/* PWA Install Button */}
+            {deferredPrompt && (
+              <div className="pt-12">
+                <p className="text-[10px] font-black opacity-20 uppercase tracking-[0.2em] mb-8 ml-4">System</p>
+                <button
+                  onClick={handleInstall}
+                  className="flex items-center gap-4 px-6 py-4 rounded-3xl transition-all duration-500 group w-full text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 shadow-sm"
+                >
+                  <Sparkles size={20} className="animate-pulse" />
+                  <span className="font-bold tracking-tight text-sm text-blue-900">Install App</span>
+                </button>
+              </div>
+            )}
+          </nav>
 
         </motion.aside>
       )}
